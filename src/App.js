@@ -2,6 +2,22 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+class MyThing extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+	currentvalue: "Hello"
+    };
+  }
+  render {
+    return (
+	<div>
+	 {currentValue}
+	 </div>
+    )
+  }
+}
+
 function App() {
   return (
     <div className="App">
@@ -19,6 +35,7 @@ function App() {
           Learn React
         </a>
       </header>
+	<MyThing></MyThing>
     </div>
   );
 }
