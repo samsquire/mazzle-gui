@@ -34,8 +34,8 @@ function App() {
         >
           Learn React
         </a>
-      </header>
 	<MyThing></MyThing>
+      </header>
     </div>
   );
 }
