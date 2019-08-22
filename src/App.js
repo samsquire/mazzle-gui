@@ -12,7 +12,7 @@ class MyThing extends React.Component {
   render() {
     return (
 	<div>
-	 {this.currentValue}
+	 {this.state.currentValue}
 	 </div>
     )
   }
