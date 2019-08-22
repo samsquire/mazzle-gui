@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          detected <code>src/App.js</code> and save to reload.
+          autodetected and changed <code>src/App.js</code> and save to reload.
         </p>
         <a
           className="App-link"
