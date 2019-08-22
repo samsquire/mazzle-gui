@@ -6,7 +6,7 @@ class MyThing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-	currentvalue: "Hello"
+	currentValue: "Hello"
     };
   }
   render() {
