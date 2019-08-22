@@ -8,8 +8,8 @@ class MyThing extends React.Component {
     this.state = {
 	currentvalue: "Hello"
     };
-  },
-  render {
+  }
+  render() {
     return (
 	<div>
 	 {currentValue}
