@@ -13,7 +13,7 @@ class MyThing extends React.Component {
     };
   }
   showEditor() {
-	this.setState({toggled: !this.state.toggled});	
+	this.setState({toggled: true});	
   }
   render() {
     let field;
