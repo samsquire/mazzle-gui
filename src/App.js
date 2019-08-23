@@ -20,7 +20,7 @@ class MyThing extends React.Component {
     if (!this.toggled) { field = <span>{this.state.currentValue}</span> }
     if (this.toggled) {  field = <input type="text"></input> }
     return (
-	<div onclick={this.showEditor}>
+	<div onClick={this.showEditor}>
 	    {field}
 	 </div>
     )
