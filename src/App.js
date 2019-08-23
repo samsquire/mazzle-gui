@@ -5,6 +5,7 @@ import './App.css';
 class MyThing extends React.Component {
   constructor(props) {
     super(props);
+    this.showEditor = this.showEditor.bind(this);
     this.state = {
 	currentValue: "Bye",
 	toggled: false
