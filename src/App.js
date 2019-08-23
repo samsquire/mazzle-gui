@@ -6,16 +6,19 @@ class MyThing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-	currentValue: "Bye"
+	currentValue: "Bye",
+	toggled: false
+
     };
   }
   showEditor() {
-	
+	this.state.toggled = !this.state.toggled;	
   }
   render() {
     return (
-	<div onClick="showEditor">
+	<div onclick={showEditor}>
 	 {this.state.currentValue}
+	 <input type="text"></input>
 	 </div>
     )
   }
