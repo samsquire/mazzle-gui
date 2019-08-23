@@ -16,10 +16,11 @@ class MyThing extends React.Component {
 	this.state.toggled = !this.state.toggled;	
   }
   render() {
+
+    let field;
+    if (!this.toggled) { field = <span>{this.state.currentValue}</span> }
+    if (this.toggled) {  field = <input type="text"></input> }
     return (
-	var field;
-        if (!this.toggled) { field = <span>{this.state.currentValue}</span> }
-	if (this.toggled) {  field = <input type="text"></input> }
 	<div onclick={this.showEditor}>
 	    {field}
 	 </div>
