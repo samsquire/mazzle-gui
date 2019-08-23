@@ -9,9 +9,12 @@ class MyThing extends React.Component {
 	currentValue: "Bye"
     };
   }
+  showEditor() {
+	
+  }
   render() {
     return (
-	<div>
+	<div onClick="showEditor">
 	 {this.state.currentValue}
 	 </div>
     )
