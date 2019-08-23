@@ -18,7 +18,7 @@ class MyThing extends React.Component {
   render() {
     return (
 	<div onclick={showEditor}>
-	 if (!this.toggled) { {this.state.currentValue} }
+	 if (!this.toggled) { <span>{this.state.currentValue}</span> }
 	 if (this.toggled) {  <input type="text"></input> }
 	 </div>
     )
