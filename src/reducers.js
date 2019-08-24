@@ -1,4 +1,4 @@
-import { VISIBIlTY_FILTERS } from './actions';
+import { ADD_IDEA, VISIBIlTY_FILTERS } from './actions';
 import { combineReducers } from 'redux'
 
 const initialState = {
@@ -6,7 +6,7 @@ const initialState = {
 	ideas: []
 }
 
-function ideaApp(state = initialstate, action) {
+function ideaApp(state = initialState, action) {
 	switch(action.type) {
 		
 		case ADD_IDEA:
