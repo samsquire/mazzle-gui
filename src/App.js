@@ -28,9 +28,7 @@ class MyThing extends React.Component {
     if (!this.state.toggled) { field = <span>{this.state.currentValue}</span> }
     if (this.state.toggled) {  field = <input type="text"></input> }
     return (
-	<div onClick={this.showEditor}>
-	    {field}
-	
+	<div onClick={this.showEditor}>{field}
 	 </div>
     )
   }
@@ -60,7 +58,13 @@ function App() {
     </Form>
   </Navbar.Collapse>
 </Navbar>
-
+<Breadcrumb>
+  <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
+  <Breadcrumb.Item href="https://getbootstrap.com/docs/4.0/components/breadcrumb/">
+    Library
+  </Breadcrumb.Item>
+  <Breadcrumb.Item active>Data</Breadcrumb.Item>
+</Breadcrumb>
 	<MyThing></MyThing>
      
     </div>
