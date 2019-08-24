@@ -1,1 +1,5 @@
 const ADD_IDEA = 'ADD_IDEA'
+
+const VISIBIlTY_FILTERS = {
+	SHOW_ALL: 'SHOW_ALL'
+}
