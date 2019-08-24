@@ -62,7 +62,6 @@ function App() {
 </Navbar>
 	
 	
-
       
         <p>
           Redeploy3 <code>src/App.js</code> and save to reload.
