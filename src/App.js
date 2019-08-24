@@ -7,6 +7,7 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
+import Card from 'react-bootstrap/Card';
 
 class MyThing extends React.Component {
   constructor(props) {
