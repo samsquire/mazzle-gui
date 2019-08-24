@@ -14,11 +14,12 @@ class MyThing extends React.Component {
     super(props);
     this.showEditor = this.showEditor.bind(this);
     this.state = {
-	currentValue: "Bye",
-	toggled: false
-
+		currentValue: "Bye",
+		toggled: false
     };
   }
+  
+  
   showEditor() {
 	this.setState({toggled: true});	
   }
@@ -60,19 +61,8 @@ function App() {
   </Navbar.Collapse>
 </Navbar>
 	
-	<Card style={{ width: '18rem' }}>
- 
-  <Card.Body>
-    <Card.Title>Card Title</Card.Title>
-    <Card.Text>
-      Some quick example text to build on the card title and make up the bulk of
-      the card's content.
-    </Card.Text>
-    <Button variant="primary">Go somewhere</Button>
-  </Card.Body>
-</Card>
 	
-      <header className="App-header">
+
       
         <p>
           Redeploy3 <code>src/App.js</code> and save to reload.
@@ -86,7 +76,7 @@ function App() {
           Learn React
         </a>
 	<MyThing></MyThing>
-      </header>
+     
     </div>
   );
 }
