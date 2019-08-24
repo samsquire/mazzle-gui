@@ -10,7 +10,6 @@ import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import Provider from 'react-redux';
 
 class MyThing extends React.Component {
   constructor(props) {
