@@ -33,7 +33,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          new server <code>src/App.js</code> and save to reload.
+          Redeploy <code>src/App.js</code> and save to reload.
         </p>
         <a
           className="App-link"
