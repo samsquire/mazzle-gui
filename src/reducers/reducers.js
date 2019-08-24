@@ -1,4 +1,4 @@
-import { ADD_IDEA, VISIBIlTY_FILTERS, SET_VISIBILITY_FILTER } from './actions';
+import { ADD_IDEA, VISIBIlTY_FILTERS, SET_VISIBILITY_FILTER } from 'actions';
 import { combineReducers } from 'redux'
 
 const initialState = {
