@@ -7,7 +7,7 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
-import Card from 'react-bootstrap/FormControl';
+import FormControl from 'react-bootstrap/FormControl';
 
 class MyThing extends React.Component {
   constructor(props) {
@@ -59,7 +59,9 @@ function App() {
     </Form>
   </Navbar.Collapse>
 </Navbar>
-		<Card style={{ width: '18rem' }}>
+	
+	<Card style={{ width: '18rem' }}>
+ 
   <Card.Body>
     <Card.Title>Card Title</Card.Title>
     <Card.Text>
@@ -69,7 +71,9 @@ function App() {
     <Button variant="primary">Go somewhere</Button>
   </Card.Body>
 </Card>
+	
       <header className="App-header">
+      
         <p>
           Redeploy3 <code>src/App.js</code> and save to reload.
         </p>
