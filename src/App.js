@@ -72,6 +72,8 @@ function App() {
   </Card.Body>
 </Card>
 
+	<Card style={{ width: '18rem' }}>
+ 
   <Card.Body>
     <Card.Title>Card Title</Card.Title>
     <Card.Text>
@@ -82,6 +84,8 @@ function App() {
   </Card.Body>
 </Card>
 
+	<Card style={{ width: '18rem' }}>
+ 
   <Card.Body>
     <Card.Title>Card Title</Card.Title>
     <Card.Text>
@@ -91,6 +95,7 @@ function App() {
     <Button variant="primary">Go somewhere</Button>
   </Card.Body>
 </Card>
+
 	
       <header className="App-header">
       
