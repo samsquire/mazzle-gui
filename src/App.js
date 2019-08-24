@@ -9,9 +9,10 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
-import rootReducer from './reducers'
+import rootReducer from './reducers/reducers'
 
 class MyThing extends React.Component {
   constructor(props) {
