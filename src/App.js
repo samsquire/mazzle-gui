@@ -14,7 +14,7 @@ import { ADD_IDEA } from 'actions';
 
 import { createStore } from 'redux'
 import ideaApp from './reducers'
-const store = createStore(todoApp)
+
 
 class MyThing extends React.Component {
   constructor(props) {
@@ -42,6 +42,7 @@ class MyThing extends React.Component {
 }
 
 function App() {
+  const store = createStore(todoApp);
   return (
     <div className="App">
 	<Provider store={store}>
