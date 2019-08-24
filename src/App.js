@@ -3,6 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
+import Navbar.Toggle from 'react-bootstrap/NavbarToggle';
+import Navbar.Brand from 'react-bootstrap/NavbarBrand';
+import Nav.Link from 'react-bootstrap/NavbarLink';
 
 class MyThing extends React.Component {
   constructor(props) {
