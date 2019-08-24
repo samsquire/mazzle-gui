@@ -20,11 +20,11 @@ function ideaApp(state = initialState, action) {
 			return Object.assign({}, state, {
 				visibilityFilter: action.filter
 			});
-	}
+	
 	
 	default:
 		return state
-	
+	}
 	return state;
 }
 
