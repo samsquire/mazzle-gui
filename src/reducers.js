@@ -21,8 +21,8 @@ function ideaApp(state = initialState, action) {
 				visibilityFilter: action.filter
 			});
 	
-	default:
-		return state
+		default:
+			return state
 	}
 	return state;
 }
