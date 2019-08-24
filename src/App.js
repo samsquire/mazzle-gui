@@ -59,10 +59,7 @@ function App() {
     </Form>
   </Navbar.Collapse>
 </Navbar>
-	
-
 		<Card style={{ width: '18rem' }}>
- 
   <Card.Body>
     <Card.Title>Card Title</Card.Title>
     <Card.Text>
@@ -73,9 +70,6 @@ function App() {
   </Card.Body>
 </Card>
       <header className="App-header">
-      
-	  
-
         <p>
           Redeploy3 <code>src/App.js</code> and save to reload.
         </p>
