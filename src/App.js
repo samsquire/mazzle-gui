@@ -11,6 +11,7 @@ import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Provider from 'react-redux';
 import createStore from 'createStore';
+import { ADD_IDEA } from 'actions';
 
 class MyThing extends React.Component {
   constructor(props) {
