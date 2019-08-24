@@ -9,6 +9,7 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Provider from 'react-redux';
 
 class MyThing extends React.Component {
   constructor(props) {
@@ -38,6 +39,7 @@ class MyThing extends React.Component {
 function App() {
   return (
     <div className="App">
+	<Provider store="">
 	<Navbar bg="light" expand="lg" fixed="top" sticky="top">
   <Navbar.Brand href="#home">Sam Squire</Navbar.Brand>
   <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -67,7 +69,7 @@ function App() {
   <Breadcrumb.Item active>Data</Breadcrumb.Item>
 </Breadcrumb>
 	<MyThing></MyThing>
-     
+     </Provider>
     </div>
   );
 }
