@@ -23,3 +23,5 @@ function ideaApp(state = initialstate, action) {
 	
 	return state;
 }
+
+export default ideaApp;
