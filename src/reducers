@@ -5,10 +5,8 @@ const initialState = {
 	ideas: []
 }
 
-function ideaApp(state, action) {
-	if (typeof state === 'undefined') {
-		return initialState;
-	}
+function ideaApp(state = initialstate, action) {
+
 	
 	return state;
 }
