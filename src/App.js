@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Button from 'react-bootstrap/Button';
 
 class MyThing extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class MyThing extends React.Component {
     return (
 	<div onClick={this.showEditor}>
 	    {field}
+		<Button>Submit</Button>
 	 </div>
     )
   }
