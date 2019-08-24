@@ -71,7 +71,6 @@ function App() {
 </Breadcrumb>
 	<MyThing></MyThing>
     </div>
-	
   );
 }
 
