@@ -13,7 +13,6 @@ function ideaApp(state = initialstate, action) {
 				ideas: [...state.ideas, {
 					text: action.text
 				}]
-				
 			});
 		
 		case SET_VISIBILITY_FILTER:
