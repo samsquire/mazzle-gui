@@ -10,8 +10,8 @@ import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Provider from 'react-redux';
-import { ADD_IDEA } from 'actions';
 
+import { ADD_IDEA } from 'actions';
 import { createStore } from 'redux'
 import ideaApp from './reducers'
 
