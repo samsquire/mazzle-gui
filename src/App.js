@@ -37,7 +37,6 @@ class MyThing extends React.Component {
 }
 
 function App() {
-  
   return (
     <div className="App">
 	<Navbar bg="light" expand="lg" fixed="top" sticky="top">
@@ -69,7 +68,6 @@ function App() {
   <Breadcrumb.Item active>Data</Breadcrumb.Item>
 </Breadcrumb>
 	<MyThing></MyThing>
-    
     </div>
   );
 }
