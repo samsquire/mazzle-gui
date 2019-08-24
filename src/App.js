@@ -60,7 +60,11 @@ function App() {
   </Navbar.Collapse>
 </Navbar>
 	
-	<Card style={{ width: '18rem' }}>
+
+	
+      <header className="App-header">
+      
+	  	<Card style={{ width: '18rem' }}>
  
   <Card.Body>
     <Card.Title>Card Title</Card.Title>
@@ -71,9 +75,7 @@ function App() {
     <Button variant="primary">Go somewhere</Button>
   </Card.Body>
 </Card>
-	
-      <header className="App-header">
-      
+	  
         <p>
           Redeploy3 <code>src/App.js</code> and save to reload.
         </p>
