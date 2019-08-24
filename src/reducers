@@ -1,1 +1,12 @@
 import { VISIBIlTY_FILTERS } from './actions';
+
+const initialState = {
+	visibilityFilter: VISIBIlTY_FILTERS.SHOW_ALL,
+	ideas: []
+}
+
+function ideaApp(state, action) {
+	if (typeof state === 'undefined') {
+		return initialState;
+	}
+}
