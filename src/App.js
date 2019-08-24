@@ -39,7 +39,6 @@ class MyThing extends React.Component {
 
 function App() {
   return (
-   
 	<div className="App">
 	<Navbar bg="light" expand="lg" fixed="top" sticky="top">
   <Navbar.Brand href="#home">Sam Squire</Navbar.Brand>
