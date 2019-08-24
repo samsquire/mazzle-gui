@@ -12,6 +12,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Provider from 'react-redux';
 
 
+import ideaApp from './reducers'
 
 
 class MyThing extends React.Component {
