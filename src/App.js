@@ -42,7 +42,7 @@ class MyThing extends React.Component {
 }
 
 function App() {
-  const store = createStore(todoApp);
+  const store = createStore(ideaApp);
   return (
     <div className="App">
 	<Provider store={store}>
