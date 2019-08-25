@@ -56,8 +56,8 @@ function App() {
     </Nav>
  <Form inline>
  <Form.Group controlId="formBasicEmail">
-    <Form.Control inline type="email" placeholder="Enter email" />
-    <Form.Control inline type="password" placeholder="Password" />
+    <Form.Control inline type="email" placeholder="Enter email" value={this.state.username} />
+    <Form.Control inline type="password" placeholder="Password" value={this.state.password} />
 	  <Button inline variant="primary" type="submit">
     Submit
   </Button>
