@@ -48,7 +48,7 @@ class MyThing extends React.Component {
 	<Form inline>
  <Form.Group controlId="formBasicEmail" onSubmit={this.handleSubmit}>
     <Form.Control inline type="email" placeholder="Enter email" onChange={this.handleUsernameChange} value={this.state.username} />
-    <Form.Control inline type="password" placeholder="Password" onChange={this.handleChange} value={this.state.password} />
+    <Form.Control inline type="password" placeholder="Password" onChange={this.handlePasswordChange} value={this.state.password} />
 	  <Button inline variant="primary" type="submit">
     Submit
   </Button>
