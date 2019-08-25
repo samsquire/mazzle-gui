@@ -56,8 +56,8 @@ function App() {
     </Nav>
 
  <Form.Group controlId="formBasicEmail">
-    <Form.Control type="email" placeholder="Enter email" />
-    <Form.Control type="password" placeholder="Password" />
+    <Form.Control inline type="email" placeholder="Enter email" />
+    <Form.Control inline type="password" placeholder="Password" />
 	  <Button variant="primary" type="submit">
     Submit
   </Button>
