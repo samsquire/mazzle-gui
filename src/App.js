@@ -9,7 +9,7 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-s
+
 import Amplify from 'aws-amplify';
 import aws_exports from './aws-exports';
 
