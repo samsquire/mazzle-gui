@@ -58,7 +58,7 @@ function App() {
  <Form.Group controlId="formBasicEmail">
     <Form.Control inline type="email" placeholder="Enter email" />
     <Form.Control inline type="password" placeholder="Password" />
-	  <Button variant="primary" type="submit">
+	  <Button inline variant="primary" type="submit">
     Submit
   </Button>
   </Form.Group>
