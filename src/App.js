@@ -31,12 +31,16 @@ class MyThing extends React.Component {
   showEditor() {
 	this.setState({toggled: true});	
   }
+	  
+	handleChange(event) {
+		this.setState({value: event.target.value});
+	  }
   render() {
     return (
 	<Form inline>
  <Form.Group controlId="formBasicEmail" onSubmit={this.handleSubmit}>
-    <Form.Control inline type="email" placeholder="Enter email" value={this.state.username} />
-    <Form.Control inline type="password" placeholder="Password" value={this.state.password} />
+    <Form.Control inline type="email" placeholder="Enter email" onChange={handleChange} value={this.state.username} />
+    <Form.Control inline type="password" placeholder="Password" onChange={handleChange} value={this.state.password} />
 	  <Button inline variant="primary" type="submit">
     Submit
   </Button>
