@@ -23,8 +23,9 @@ class MyThing extends React.Component {
     };
   }
   
-  handleSubmit() {
-	  
+  handleSubmit(event) {
+	  console.log();
+	  event.preventDefault();
   }
   
   showEditor() {
