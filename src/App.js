@@ -57,14 +57,12 @@ function App() {
 
  <Form.Group controlId="formBasicEmail">
     <Form.Control type="email" placeholder="Enter email" />
+    <Form.Control type="password" placeholder="Password" />
+	  <Button variant="primary" type="submit">
+    Submit
+  </Button>
   </Form.Group>
 
-  <Form.Group controlId="formBasicPassword">
-    <Form.Control type="password" placeholder="Password" />
-  </Form.Group>
-  <Button variant="primary" type="submit">
-    Login
-  </Button>
 
 
   </Navbar.Collapse>
