@@ -54,7 +54,7 @@ function App() {
         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
       </NavDropdown>
     </Nav>
- <Form>
+ <Form inline>
  <Form.Group controlId="formBasicEmail">
     <Form.Control inline type="email" placeholder="Enter email" />
     <Form.Control inline type="password" placeholder="Password" />
