@@ -45,10 +45,10 @@ class MyThing extends React.Component {
 	  
   render() {
     return (
-	<Form inline>
+	<Form inline="true">
  <Form.Group controlId="formBasicEmail" onSubmit={this.handleSubmit}>
-    <Form.Control inline type="email" placeholder="Enter email" onChange={this.handleUsernameChange} value={this.state.username} />
-    <Form.Control inline type="password" placeholder="Password" onChange={this.handlePasswordChange} value={this.state.password} />
+    <Form.Control type="email" placeholder="Enter email" onChange={this.handleUsernameChange} value={this.state.username} />
+    <Form.Control type="password" placeholder="Password" onChange={this.handlePasswordChange} value={this.state.password} />
 	  <Button inline variant="primary" type="submit">
     Submit
   </Button>
