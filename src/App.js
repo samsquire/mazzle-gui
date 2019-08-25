@@ -23,6 +23,9 @@ class MyThing extends React.Component {
     };
   }
   
+  handleSubmit() {
+	  
+  }
   
   showEditor() {
 	this.setState({toggled: true});	
