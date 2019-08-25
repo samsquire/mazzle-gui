@@ -32,15 +32,22 @@ class MyThing extends React.Component {
 	this.setState({toggled: true});	
   }
   render() {
-    let field;
-    if (!this.state.toggled) { field = <span>{this.state.currentValue}</span> }
-    if (this.state.toggled) {  field = <input type="text"></input> }
     return (
-	<div onClick={this.showEditor}>{field}
-	 </div>
+	<Form inline>
+ <Form.Group controlId="formBasicEmail" onSubmit={this.handleSubmit}>
+    <Form.Control inline type="email" placeholder="Enter email" value={this.state.username} />
+    <Form.Control inline type="password" placeholder="Password" value={this.state.password} />
+	  <Button inline variant="primary" type="submit">
+    Submit
+  </Button>
+  </Form.Group>
+  </Form>
+
     )
   }
 }
+
+
 
 function App() {
   return (
@@ -60,16 +67,10 @@ function App() {
         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
       </NavDropdown>
     </Nav>
- <Form inline>
- <Form.Group controlId="formBasicEmail" onSubmit={this.handleSubmit}>
-    <Form.Control inline type="email" placeholder="Enter email" value={this.state.username} />
-    <Form.Control inline type="password" placeholder="Password" value={this.state.password} />
-	  <Button inline variant="primary" type="submit">
-    Submit
-  </Button>
-  </Form.Group>
-  </Form>
-
+	
+	<MyThing></MyThing>
+	
+ 
 
   </Navbar.Collapse>
 </Navbar>
@@ -80,7 +81,7 @@ function App() {
   </Breadcrumb.Item>
   <Breadcrumb.Item active>Data</Breadcrumb.Item>
 </Breadcrumb>
-	<MyThing></MyThing>
+	
     </div>
   );
 }
