@@ -17,7 +17,9 @@ class MyThing extends React.Component {
     this.showEditor = this.showEditor.bind(this);
     this.state = {
 		currentValue: "Bye",
-		toggled: false
+		toggled: false,
+		username: "",
+		password: ""
     };
   }
   
@@ -55,7 +57,7 @@ function App() {
       </NavDropdown>
     </Nav>
  <Form inline>
- <Form.Group controlId="formBasicEmail">
+ <Form.Group controlId="formBasicEmail" onSubmit={this.handleSubmit}>
     <Form.Control inline type="email" placeholder="Enter email" value={this.state.username} />
     <Form.Control inline type="password" placeholder="Password" value={this.state.password} />
 	  <Button inline variant="primary" type="submit">
