@@ -15,6 +15,8 @@ class MyThing extends React.Component {
   constructor(props) {
     super(props);
     this.showEditor = this.showEditor.bind(this);
+	this.handleUsernameChange = this.handleUsernameChange.bind(this);
+	this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.state = {
 		currentValue: "Bye",
 		toggled: false,
