@@ -26,7 +26,7 @@ class MyThing extends React.Component {
   }
   
   handleSubmit(event) {
-	  console.log();
+	  console.log("sign in");
 	  event.preventDefault();
   }
   
