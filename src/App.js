@@ -64,44 +64,6 @@ class MyThing extends React.Component {
 
 function App() {
   return (
-	<div className="App">
-	<Navbar bg="light" expand="lg" fixed="top" sticky="top">
-  <Navbar.Brand href="#home">devops-pipeline</Navbar.Brand>
-  <Navbar.Toggle aria-controls="basic-navbar-nav" />
-  <Navbar.Collapse id="basic-navbar-nav">
-    <Nav className="mr-auto">
-      <Nav.Link href="#home">Home</Nav.Link>
-      <Nav.Link href="#link">Builds</Nav.Link>
-      <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-        <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-        <NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-      </NavDropdown>
-    </Nav>
-	
-	<MyThing></MyThing>
-	
- 
-
-  </Navbar.Collapse>
-</Navbar>
-<Breadcrumb>
-  <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
-  <Breadcrumb.Item href="https://getbootstrap.com/docs/4.0/components/breadcrumb/">
-    Library
-  </Breadcrumb.Item>
-  <Breadcrumb.Item active>Data</Breadcrumb.Item>
-</Breadcrumb>
-	
-	<Nav className="sidebar-sticky col-md-2 d-none d-md-block sidebar bg-light" sidebar="">
-	<Nav.Link href="#home">Home</Nav.Link>
-      <Nav.Link href="#link">Builds</Nav.Link>
-	</Nav>
-		
-    </div>
-	
 	<div class="container-fluid">
       <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
@@ -328,6 +290,9 @@ function App() {
         </main>
       </div>
     </div>
+	
+	
+	
 	
   );
 }
