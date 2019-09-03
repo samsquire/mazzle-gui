@@ -113,7 +113,7 @@ function App() {
               <li class="nav-item">
                 <a class="nav-link" href="#">
                   <span data-feather="layers"></span>
-                  Integrations
+                  Tooling
                 </a>
               </li>
             </ul>
