@@ -67,7 +67,7 @@ function App() {
   return (
 	<div className="App">
 	<Navbar bg="light" expand="lg" fixed="top" sticky="top">
-  <Navbar.Brand href="#home">Sam Squire</Navbar.Brand>
+  <Navbar.Brand href="#home">devops-pipeline</Navbar.Brand>
   <Navbar.Toggle aria-controls="basic-navbar-nav" />
   <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
