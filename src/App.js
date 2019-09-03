@@ -12,7 +12,6 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 
 
-
 class MyThing extends React.Component {
   constructor(props) {
     super(props);
@@ -72,7 +71,7 @@ function App() {
   <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
       <Nav.Link href="#home">Home</Nav.Link>
-      <Nav.Link href="#link">Link</Nav.Link>
+      <Nav.Link href="#link">Builds</Nav.Link>
       <NavDropdown title="Dropdown" id="basic-nav-dropdown">
         <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
@@ -95,6 +94,9 @@ function App() {
   </Breadcrumb.Item>
   <Breadcrumb.Item active>Data</Breadcrumb.Item>
 </Breadcrumb>
+	
+	<Nav className="col-md-2 d-none d-md-block sidebar bg-light" sidebar="">
+	</Nav>
 	
     </div>
   );
