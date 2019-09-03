@@ -96,9 +96,10 @@ function App() {
 </Breadcrumb>
 	
 	<Nav className="col-md-2 d-none d-md-block sidebar bg-light" sidebar="">
-	</Nav>
 	<Nav.Link href="#home">Home</Nav.Link>
       <Nav.Link href="#link">Builds</Nav.Link>
+	</Nav>
+		
     </div>
   );
 }
