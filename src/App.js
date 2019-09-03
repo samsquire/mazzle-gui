@@ -95,7 +95,7 @@ function App() {
   <Breadcrumb.Item active>Data</Breadcrumb.Item>
 </Breadcrumb>
 	
-	<Nav className="col-md-2 d-none d-md-block sidebar bg-light" sidebar="">
+	<Nav className="sidebar-sticky col-md-2 d-none d-md-block sidebar bg-light" sidebar="">
 	<Nav.Link href="#home">Home</Nav.Link>
       <Nav.Link href="#link">Builds</Nav.Link>
 	</Nav>
