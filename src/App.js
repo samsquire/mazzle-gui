@@ -64,6 +64,7 @@ class MyThing extends React.Component {
 
 function App() {
   return (
+  <div className="App">
 	<div class="container-fluid">
       <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
@@ -290,7 +291,7 @@ function App() {
         </main>
       </div>
     </div>
-	
+</div>
 	
 	
 	
