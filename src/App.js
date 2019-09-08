@@ -17,13 +17,13 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 
 var data = {
 	components: [
-	{name: 'terraform/vault'},
-	{name: 'terraform/bastion'},
-	{name: 'terraform/private'},
-	{name: 'terraform/prometheus'},
-	{name: 'packer/ubuntu-java'},
-	{name: 'packer/authenticated-ami'},
-	{name: 'packer/source-ami'}
+	{name: 'terraform/vault', status: 'green'},
+	{name: 'terraform/bastion', status: 'green'},
+	{name: 'terraform/private', status: 'green'},
+	{name: 'terraform/prometheus', status: 'green'},
+	{name: 'packer/ubuntu-java', status: 'green'},
+	{name: 'packer/authenticated-ami', status: 'green'},
+	{name: 'packer/source-ami', status: 'green'}
 	],
 	latest: {
 		name: "terraform/vpc",
