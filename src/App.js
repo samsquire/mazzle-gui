@@ -40,7 +40,7 @@ class ComponentList extends React.Component {
 	render() {
 		var items = this.props.components.components.map((item, index) => {
 			return (
-		 <Card style={{ width: '12rem' }}>
+		 <Card style={{ width: '15rem' }}>
 		  <Card.Body>
 			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
