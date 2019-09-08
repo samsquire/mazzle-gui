@@ -107,7 +107,7 @@ class LatestComponentStatus extends React.Component {
 			</Row>);
 		});
 		
-		return (<Container>
+		return (<h2>{this.props.latest.name}</h2><Container>
 		{rows}
 		</Container>)
 	}
