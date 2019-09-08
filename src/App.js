@@ -29,11 +29,11 @@ var data = {
 		commands: [
 			{name: 'validate', progress: 100},
 			{name: 'test', progress: 100},
-			{name: 'package', progress: 100},
-			{name: 'plan', progress: 100},
-			{name: 'run', progress: 100},
-			{name: 'deploy', progress: 100},
-			{name: 'release', progress: 100}
+			{name: 'package', progress: 60},
+			{name: 'plan', progress: 0},
+			{name: 'run', progress: 0},
+			{name: 'deploy', progress: 0},
+			{name: 'release', progress: 0}
 		]
 	}
 }
