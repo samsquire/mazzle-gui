@@ -237,11 +237,12 @@ function App() {
 
           
           <div class="table-responsive">
-           <ComponentList components={components} />
+           
           </div>
         </main>
       </div>
     </div>
+	<ComponentList components={components} />
 	</div>
 	
 	
