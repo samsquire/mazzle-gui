@@ -28,14 +28,14 @@ var data = {
 	latest: {
 		name: "terraform/vpc",
 		commands: [
-			{name: 'validate', description: '21', progress: 100},
-			{name: 'test', progress: 100},
-			{name: 'package', progress: 60},
-			{name: 'plan', progress: 0},
-			{name: 'run', progress: 0},
-			{name: 'deploy', progress: 0},
-			{name: 'release', progress: 0},
-			{name: 'smoke', progress: 0}
+			{name: 'validate', buildIdentifier: '21', progress: 100},
+			{name: 'test', buildIdentifier: '21', progress: 100},
+			{name: 'package', buildIdentifier: '21', progress: 60},
+			{name: 'plan', buildIdentifier: '21', progress: 0},
+			{name: 'run', buildIdentifier: '21', progress: 0},
+			{name: 'deploy', buildIdentifier: '21', progress: 0},
+			{name: 'release', buildIdentifier: '21', progress: 0},
+			{name: 'smoke', buildIdentifier: '21', progress: 0}
 		]
 	}
 }
