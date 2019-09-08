@@ -12,7 +12,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Form.Control from 'react-bootstrap/Form.Control'
+
 
 var components = {
 	components: [
