@@ -9,6 +9,8 @@ import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Container'
 
 var components = {
 	components: [
