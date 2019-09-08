@@ -94,6 +94,7 @@ class LatestComponentStatus extends React.Component {
 			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
+			{item.buildIdentifier}
 			<ProgressBar striped variant="success" now={item.progress} />
 			</Card.Text>
 			<Card.Link href="#">View</Card.Link>
