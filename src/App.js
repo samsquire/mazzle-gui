@@ -11,6 +11,7 @@ import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Container'
+import Col from 'react-bootstrap/Col'
 
 var components = {
 	components: [
