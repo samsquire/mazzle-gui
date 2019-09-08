@@ -87,12 +87,12 @@ class LatestComponentStatus extends React.Component {
 	render() {
 		var items = this.props.latest.commands.map((item, index) => {
 			return (
-		 <Card className="mb-4" style={{ width: '15rem' }}>
+		 <Card className="mb-4" style={{ width: '6rem' }}>
 		  <Card.Body>
 			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
-			  
+			<ProgressBar striped variant="success" now={40} />
 			</Card.Text>
 			<Card.Link href="#">Card Link</Card.Link>
 			<Card.Link href="#">Another Link</Card.Link>
