@@ -31,7 +31,8 @@ var data = {
 			{name: 'package'},
 			{name: 'plan'},
 			{name: 'run'},
-			{name: 'deploy'}
+			{name: 'deploy'},
+			{name: 'release'}
 		]
 	}
 }
