@@ -23,7 +23,17 @@ var data = {
 	{name: 'packer/ubuntu-java'},
 	{name: 'packer/authenticated-ami'},
 	{name: 'packer/source-ami'}
-	]
+	],
+	latest: {
+		commands: [
+			{name: 'validate'},
+			{name: 'test'},
+			{name: 'package'},
+			{name: 'plan'},
+			{name: 'run'},
+			{name: 'deploy'}
+		]
+	}
 }
 
 function chunk(arr, chunkSize) {
