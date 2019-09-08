@@ -26,6 +26,7 @@ var data = {
 	{name: 'packer/source-ami'}
 	],
 	latest: {
+		name: "terraform/vpc",
 		commands: [
 			{name: 'validate', progress: 100},
 			{name: 'test', progress: 100},
