@@ -27,13 +27,13 @@ var data = {
 	],
 	latest: {
 		commands: [
-			{name: 'validate'},
-			{name: 'test'},
-			{name: 'package'},
-			{name: 'plan'},
-			{name: 'run'},
-			{name: 'deploy'},
-			{name: 'release'}
+			{name: 'validate', progress: 100},
+			{name: 'test', progress: 100},
+			{name: 'package', progress: 100},
+			{name: 'plan', progress: 100},
+			{name: 'run', progress: 100},
+			{name: 'deploy', progress: 100},
+			{name: 'release', progress: 100}
 		]
 	}
 }
