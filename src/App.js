@@ -34,7 +34,8 @@ var data = {
 			{name: 'plan', progress: 0},
 			{name: 'run', progress: 0},
 			{name: 'deploy', progress: 0},
-			{name: 'release', progress: 0}
+			{name: 'release', progress: 0},
+			{name: 'smoke', progress: 0}
 		]
 	}
 }
