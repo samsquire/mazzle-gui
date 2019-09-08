@@ -24,7 +24,12 @@ var components = {
 	]
 }
 
-
+function chunk(arr, chunkSize) {
+  var R = [];
+  for (var i=0,len=arr.length; i<len; i+=chunkSize)
+    R.push(arr.slice(i,i+chunkSize));
+  return R;
+}
 
 class ComponentList extends React.Component {
 	constructor(props) {
@@ -48,7 +53,18 @@ class ComponentList extends React.Component {
 		</Card>);
 		});
 		
-		return <div>{ items } </div>
+		var chunks = chunk(items, 5);
+		
+		return <Container>
+		  <Row>
+			items
+		  </Row>
+		  <Row>
+			<Col>1 of 3</Col>
+			<Col>2 of 3</Col>
+			<Col>3 of 3</Col>
+		  </Row>
+		</Container>
 	}
 }
 
