@@ -18,7 +18,7 @@ var components = {
 	{name: 'terraform/prometheus'},
 	{name: 'packer/ubuntu-java'},
 	{name: 'packer/authenticated-ami'},
-	{name: 'packer/source-ami'},
+	{name: 'packer/source-ami'}
 	]
 }
 
