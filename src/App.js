@@ -25,7 +25,7 @@ var data = {
 	{name: 'packer/authenticated-ami'},
 	{name: 'packer/source-ami'}
 	],
-	latest: {
+	latest: [{
 		name: "terraform/vpc",
 		commands: [
 			{name: 'validate', progress: 100},
@@ -36,7 +36,7 @@ var data = {
 			{name: 'deploy', progress: 0},
 			{name: 'release', progress: 0}
 		]
-	}
+	}]
 }
 
 function chunk(arr, chunkSize) {
