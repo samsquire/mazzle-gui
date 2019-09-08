@@ -54,16 +54,14 @@ class ComponentList extends React.Component {
 		});
 		
 		var chunks = chunk(items, 5);
+		var rows = chunks.map((item, index) => {
+			return (<Row>
+			{ item.map((component, index) => {return <Col>{item}</Col>}; } 
+			</Row>)
+		});
 		
 		return <Container>
-		  <Row>
-			items
-		  </Row>
-		  <Row>
-			<Col>1 of 3</Col>
-			<Col>2 of 3</Col>
-			<Col>3 of 3</Col>
-		  </Row>
+		{rows}
 		</Container>
 	}
 }
