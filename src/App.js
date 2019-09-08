@@ -170,7 +170,7 @@ function App() {
 
          
 
-          <h2>Environment</h2>
+          <h2 class="h2">Environment</h2>
           <div class="table-responsive">
            
           </div>
