@@ -28,7 +28,7 @@ var data = {
 	latest: {
 		name: "terraform/vpc",
 		commands: [
-			{name: 'validate', progress: 100},
+			{name: 'validate', description: '21', progress: 100},
 			{name: 'test', progress: 100},
 			{name: 'package', progress: 60},
 			{name: 'plan', progress: 0},
