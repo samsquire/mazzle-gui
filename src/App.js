@@ -61,9 +61,9 @@ class ComponentList extends React.Component {
 			</Row>);
 		});
 		
-		return <Container>
+		return (<Container>
 		{rows}
-		</Container>
+		</Container>)
 	}
 }
 
