@@ -17,6 +17,7 @@ class ComponentList extends React.Component {
 	
 	render() {
 		var items = this.props.components.map(() => {
+			return 
 		 <Card style={{ width: '18rem' }}>
 		  <Card.Body>
 			<Card.Title>vault</Card.Title>
