@@ -20,7 +20,7 @@ var data = {
 	{name: 'terraform/vault', status: 'green'},
 	{name: 'terraform/bastion', status: 'green'},
 	{name: 'terraform/private', status: 'green'},
-	{name: 'terraform/prometheus', status: 'danger'},
+	{name: 'terraform/prometheus', status: 'red'},
 	{name: 'packer/ubuntu-java', status: 'green'},
 	{name: 'packer/authenticated-ami', status: 'green'},
 	{name: 'packer/source-ami', status: 'green'}
