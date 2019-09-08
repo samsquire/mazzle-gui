@@ -14,7 +14,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 
-var components = {
+var data = {
 	components: [
 	{name: 'terraform/vault'},
 	{name: 'terraform/bastion'},
@@ -39,7 +39,7 @@ class ComponentList extends React.Component {
 	}
 	
 	render() {
-		var items = this.props.components.components.map((item, index) => {
+		var items = this.props.data.components.map((item, index) => {
 			return (
 		 <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
@@ -207,11 +207,13 @@ function App() {
 			</div>
          </div>
 		 
-		 <ComponentList components={components} />
+		 <ComponentList components={data.components} />
 		 
 	    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h2 class="h2">Component View</h2>
         </div>
+		
+		<LatestComponentStatus latestStatus="{}" />
 		
 		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h2 class="h2">Pipeline View</h2>
