@@ -12,6 +12,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Form.Control from 'react-bootstrap/Form.Control'
 
 var components = {
 	components: [
@@ -201,6 +202,7 @@ function App() {
 	
 		  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 		<h2 class="h2">Components</h2>
+		<Form.Control type="text" placeholder="Search" />
          </div>
 		 
 		 <ComponentList components={components} />
