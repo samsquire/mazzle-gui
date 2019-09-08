@@ -10,7 +10,28 @@ import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
-
+class ComponentList extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+	
+	render() {
+		return this.props.components.map(() => {
+		 <Card style={{ width: '18rem' }}>
+		  <Card.Body>
+			<Card.Title>vault</Card.Title>
+			<Card.Subtitle className="mb-2 text-muted">vault server</Card.Subtitle>
+			<Card.Text>
+			  Some quick example text to build on the card title and make up the bulk of
+			  the card's content.
+			</Card.Text>
+			<Card.Link href="#">Card Link</Card.Link>
+			<Card.Link href="#">Another Link</Card.Link>
+		  </Card.Body>
+		</Card>
+		})
+	}
+}
 
 class MyThing extends React.Component {
   constructor(props) {
@@ -177,19 +198,8 @@ function App() {
 		  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 		<h2 class="h2">Components</h2>
          </div>
-		 
-		 <Card style={{ width: '18rem' }}>
-  <Card.Body>
-    <Card.Title>Card Title</Card.Title>
-    <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
-    <Card.Text>
-      Some quick example text to build on the card title and make up the bulk of
-      the card's content.
-    </Card.Text>
-    <Card.Link href="#">Card Link</Card.Link>
-    <Card.Link href="#">Another Link</Card.Link>
-  </Card.Body>
-</Card>
+		 <ComponentList props="{this.state.components}" />
+		
 
           
           <div class="table-responsive">
