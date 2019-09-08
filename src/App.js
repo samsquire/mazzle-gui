@@ -57,7 +57,7 @@ class ComponentList extends React.Component {
 		var chunks = chunk(items, 5);
 		var rows = chunks.map((item, index) => {
 			return (<Row>
-			{ item.map((component, index) => {return (<Col>{component}</Col>); }); } 
+			{ item.map((component, index) => {return (<Col>{component}</Col>); })} 
 			</Row>)
 		});
 		
