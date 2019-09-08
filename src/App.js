@@ -57,11 +57,10 @@ class ComponentList extends React.Component {
 			return (
 		 <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
-			<Card.Title>{ item.name }</Card.Title>
+			<Card.Title><ProgressBar variant="success" now={item.progress} />{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
-			  Some quick example text to build on the card title and make up the bulk of
-			  the card's content.
+			  
 			</Card.Text>
 			<Card.Link href="#">Card Link</Card.Link>
 			<Card.Link href="#">Another Link</Card.Link>
