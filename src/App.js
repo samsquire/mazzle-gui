@@ -10,6 +10,20 @@ import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
+var components = {
+	components: [
+	{name: 'terraform/vault'},
+	{name: 'terraform/bastion'},
+	{name: 'terraform/private'},
+	{name: 'terraform/prometheus'},
+	{name: 'packer/ubuntu-java'},
+	{name: 'packer/authenticated-ami'},
+	{name: 'packer/source-ami'},
+	]
+}
+
+
+
 class ComponentList extends React.Component {
 	constructor(props) {
 		super(props);
@@ -201,7 +215,7 @@ function App() {
 		  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 		<h2 class="h2">Components</h2>
          </div>
-		 <ComponentList props="{this.state.components}" />
+		 <ComponentList props="{components}" />
 		
 
           
