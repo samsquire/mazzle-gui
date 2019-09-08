@@ -92,7 +92,7 @@ class LatestComponentStatus extends React.Component {
 			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
-			<ProgressBar striped variant="success" now={40} />
+			<ProgressBar striped variant="success" now={item.progress} />
 			</Card.Text>
 			<Card.Link href="#">Card Link</Card.Link>
 			<Card.Link href="#">Another Link</Card.Link>
