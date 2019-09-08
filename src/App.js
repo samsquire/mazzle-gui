@@ -102,7 +102,7 @@ class LatestComponentStatus extends React.Component {
 		var chunks = chunk(items, 10);
 		var rows = chunks.map((item, index) => {
 			return (<Row>
-			{ item.map((component, index) => {return (<Col>{component}</Col>); })} 
+			{ item.map((component, index) => {return (<Col class="pl-0 pr-0">{component}</Col>); })} 
 			</Row>);
 		});
 		
