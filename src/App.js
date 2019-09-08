@@ -79,6 +79,39 @@ class ComponentList extends React.Component {
 	}
 }
 
+class LatestComponentStatus extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+	render() {
+		var items = this.props.latest.map((item, index) => {
+			return (
+		 <Card className="mb-4" style={{ width: '15rem' }}>
+		  <Card.Body>
+			<Card.Title>{ item.name }</Card.Title>
+			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
+			<Card.Text>
+			  
+			</Card.Text>
+			<Card.Link href="#">Card Link</Card.Link>
+			<Card.Link href="#">Another Link</Card.Link>
+		  </Card.Body>
+		</Card>);
+		});
+		
+		var chunks = chunk(items, 3);
+		var rows = chunks.map((item, index) => {
+			return (<Row>
+			{ item.map((component, index) => {return (<Col>{component}</Col>); })} 
+			</Row>);
+		});
+		
+		return (<Container>
+		{rows}
+		</Container>)
+	}
+}
+
 class MyThing extends React.Component {
   constructor(props) {
     super(props);
