@@ -16,8 +16,8 @@ class ComponentList extends React.Component {
 	}
 	
 	render() {
-		var items = this.props.components.map(() => {
-			return 
+		var items = this.props.components.map((item) => {
+			return (
 		 <Card style={{ width: '18rem' }}>
 		  <Card.Body>
 			<Card.Title>vault</Card.Title>
@@ -29,7 +29,7 @@ class ComponentList extends React.Component {
 			<Card.Link href="#">Card Link</Card.Link>
 			<Card.Link href="#">Another Link</Card.Link>
 		  </Card.Body>
-		</Card>
+		</Card>);
 		});
 		
 		return <div>{ items } </div>
