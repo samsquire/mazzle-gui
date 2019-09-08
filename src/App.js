@@ -54,10 +54,11 @@ class ComponentList extends React.Component {
 	
 	render() {
 		var items = this.props.components.map((item, index) => {
+			var variant = {green: 'success', 'red': 'danger'}[item.status]
 			return (
 		 <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
-			<Card.Title><ProgressBar variant="success" now="100" />{ item.name }</Card.Title>
+			<Card.Title><ProgressBar variant={variant} now="100" />{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
 			  
