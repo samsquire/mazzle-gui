@@ -61,14 +61,7 @@ function appReducer(state = INITIAL_STATE, action) {
 			break;
 		case PROGRESS:
 			var newState = Object.assign(state, {
-				latest: state.latest.commands.map((command, index) => {
-					if (command.name === action.name) {
-						var newItem = Object.assign({}, command);
-						newItem.progress = action.progress;
-						return newItem;
-					}
-					return command;
-				})
+				latest: state.latest
 			});
 			return newState;
 			break;
