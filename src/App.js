@@ -447,7 +447,7 @@ setTimeout(() => {
 
 let queued = []
 queued.push(() => { store.dispatch(buildChanging('terraform/bastion', 'running')) });
-// queued.push(() => { store.dispatch(progress('terraform/bastion', '20')) });
+queued.push(() => { store.dispatch(progress('validate', '20')) });
 function dispatchTest() {
 	if (queued.length == 0) { return; }
 	var nextItem = queued.shift();
