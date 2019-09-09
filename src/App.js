@@ -147,12 +147,12 @@ class EnvironmentPipeline extends React.Component {
 		</Card>
 		});
 		var chunks = chunk(items, 8);
-		chunks.map((item, index) = > {
+		var rows = chunks.map((item, index) = > {
 			var columns = item.map((cell, index) => { return (<Col>{cell}</Col>)});
 			return (<Row>{columns}</Row>)
 		};
 		return (<Container>
-			
+		{rows}
 		</Container>)
 	}
 }
