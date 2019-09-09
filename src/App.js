@@ -136,7 +136,7 @@ class EnvironmentPipeline extends React.Component {
 			
 			return group.map((item, index) => { 
 				var variant = {green: 'success', 'red': 'danger'}[item.status]
-				return  <Card className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '9rem' }}>
+				return  <Card className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '12rem' }}>
 			  <Card.Body>
 				<Card.Title></Card.Title>
 				<Card.Subtitle className="mb-2 text-muted">{ item.name }</Card.Subtitle>
