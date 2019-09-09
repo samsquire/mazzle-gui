@@ -30,9 +30,12 @@ function appReducer(state = INITIAL_STATE, action) {
 		case BUILD_STARTING:
 			
 		break;
+		default:
+		return state;
 	}
 }
 
+var rootReducer = combineReducers({app: appReducer})
 
 var data = {
 	
@@ -376,4 +379,10 @@ class App extends React.Component {
 	}
 }
 
+
+store.subscribe(() => {
+	ReactDOM.render(<App store={store} />, document.getElementById('root'));
+});
+
+store.dispatch({type: 'INIT'});
 export default App;
