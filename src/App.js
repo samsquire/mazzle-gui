@@ -399,4 +399,9 @@ store.subscribe(() => {
 });
 
 store.dispatch({type: 'INIT', state: data});
+
+setTimeout(() => {
+	
+}, 5000);
+
 export default App;
