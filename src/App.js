@@ -132,7 +132,7 @@ class EnvironmentPipeline extends React.Component {
 		super(props);
 	}
 	render() {
-		var items = this.props.pipeline.map((item, index) => {
+		var items = (this.props.pipeline.map((item, index) => {
 			var variant = {green: 'success', 'red': 'danger'}[item.status]
 			return  <Card className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '9rem' }}>
 		  <Card.Body>
@@ -145,7 +145,7 @@ class EnvironmentPipeline extends React.Component {
 			<Card.Link href="#">Another Link</Card.Link>
 		  </Card.Body>
 		</Card>
-		};
+		}));
 		var chunks = chunk(items, 8);
 		var rows = chunks.map((item, index) = > {
 			var columns = item.map((cell, index) => { return (<Col>{cell}</Col>)});
