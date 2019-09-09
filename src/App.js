@@ -52,7 +52,19 @@ function appReducer(state = INITIAL_STATE, action) {
 					return item;
 				})
 			});
-			console.log(newState);
+			return newState;
+			break;
+		case PROGRESS:
+			var newState = Object.assign(state, {
+				latest: state.latest.commands.map((item, index) => {
+					if (item.name === action.name) {
+						var newItem = Object.assign({}, item);
+						newItem.progress = action.progress;
+						return newItem;
+					}
+					return item;
+				})
+			});
 			return newState;
 			break;
 		default:
