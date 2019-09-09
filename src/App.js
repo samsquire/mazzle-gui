@@ -452,7 +452,7 @@ queued.push(() => { store.dispatch(buildChanging('terraform/bastion', 'running')
 ["validate", "test", "package", "plan", "run", "deploy", "smoke"].forEach((item) => {
 	["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"].forEach((pct) => {
 		queued.push(() => { store.dispatch(progress(item, pct)) });
-	}
+	});
 });
 
 
