@@ -16,14 +16,15 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 
 
 var data = {
+	
 	components: [
-	{name: 'terraform/vault', status: 'green'},
-	{name: 'terraform/bastion', status: 'green'},
-	{name: 'terraform/private', status: 'green'},
-	{name: 'terraform/prometheus', status: 'red'},
-	{name: 'packer/ubuntu-java', status: 'green'},
-	{name: 'packer/authenticated-ami', status: 'green'},
-	{name: 'packer/source-ami', status: 'green'}
+		{name: 'terraform/vault', status: 'green'},
+		{name: 'terraform/bastion', status: 'green'},
+		{name: 'terraform/private', status: 'green'},
+		{name: 'terraform/prometheus', status: 'red'},
+		{name: 'packer/ubuntu-java', status: 'green'},
+		{name: 'packer/authenticated-ami', status: 'green'},
+		{name: 'packer/source-ami', status: 'green'}
 	],
 	latest: {
 		name: "terraform/vpc",
@@ -37,7 +38,17 @@ var data = {
 			{name: 'release', buildIdentifier: '21', progress: 0},
 			{name: 'smoke', buildIdentifier: '21', progress: 0}
 		]
-	}
+	},
+	environment_components: [
+		{name: 'terraform/vault', status: 'green'},
+		{name: 'terraform/bastion', status: 'green'},
+		{name: 'terraform/private', status: 'green'},
+		{name: 'terraform/prometheus', status: 'red'},
+		{name: 'packer/ubuntu-java', status: 'green'},
+		{name: 'packer/authenticated-ami', status: 'green'},
+		{name: 'packer/source-ami', status: 'green'}
+
+	]
 }
 
 function chunk(arr, chunkSize) {
@@ -288,6 +299,8 @@ function App() {
 		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h2 class="h2">Pipeline View</h2>
         </div>
+		
+		<EnvironmentPipeline environment_components={data.pipeline} />
 		
 		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h2 class="h2">Task View</h2>
