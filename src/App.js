@@ -132,7 +132,7 @@ class EnvironmentPipeline extends React.Component {
 		super(props);
 	}
 	render() {
-		return this.props.pipeline.map((item, index) => {
+		var items = (this.props.pipeline.map((item, index) => {
 			var variant = {green: 'success', 'red': 'danger'}[item.status]
 			return  <Card className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '15rem' }}>
 		  <Card.Body>
@@ -146,6 +146,10 @@ class EnvironmentPipeline extends React.Component {
 		  </Card.Body>
 		</Card>
 		});
+		
+		return (<Container>
+			
+		</Container>)
 	}
 }
 
