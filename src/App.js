@@ -35,7 +35,7 @@ function appReducer(state = INITIAL_STATE, action) {
 		case BUILD_CHANGING:
 			console.log("build changing");
 			return Object.assign(state, {
-				components: state.components.map((item, index) => {
+				components: state.app.components.map((item, index) => {
 					if (item.name === action.name) {
 						var changedItem = Object.assign({}, item);
 						item.process = action.process;
