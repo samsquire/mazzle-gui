@@ -339,7 +339,7 @@ class App extends React.Component {
 				</div>
 			 </div>
 			 
-			 <ComponentList components={data.components} />
+			 <ComponentList components={store.getState().components} />
 			 
 			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 class="h2">Component View</h2>
