@@ -63,7 +63,7 @@ function appReducer(state = INITIAL_STATE, action) {
 						newItem.progress = action.progress;
 						return newItem;
 					}
-					return item;
+					return command;
 				})
 			});
 			return newState;
