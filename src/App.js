@@ -106,10 +106,15 @@ class ComponentList extends React.Component {
 	render() {
 		var items = this.props.components.map((item, index) => {
 			var variant = {green: 'success', 'red': 'danger'}[item.status]
+			var progressAttributes = {};
+			if (item.process === "running") {
+				progressAttributes.animated = true;
+			}
+			
 			return (
 		 <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
-			<Card.Title><ProgressBar variant={variant} animated now="100" />{ item.name }</Card.Title>
+			<Card.Title><ProgressBar variant={variant} {...progressAttributes} now="100" />{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
 			  
