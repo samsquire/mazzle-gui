@@ -127,8 +127,8 @@ class ComponentList extends React.Component {
 		
 		var chunks = chunk(items, 3);
 		var rows = chunks.map((item, index) => {
-			return (<Row>
-			{ item.map((component, index) => {return (<Col key={item.name}>{component}</Col>); })} 
+			return (<Row key={index}>
+			{ item.map((component, index) => {return (<Col key={component.name}>{component}</Col>); })} 
 			</Row>);
 		});
 		
