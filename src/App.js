@@ -165,6 +165,7 @@ class LatestComponentStatus extends React.Component {
 		super(props);
 	}
 	render() {
+		console.log(this.props);
 		var items = this.props.latest.commands.map((item, index) => {
 			return (
 		 <Card key={item.name} className="mb-4" style={{ width: '10rem' }}>
