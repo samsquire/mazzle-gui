@@ -39,7 +39,7 @@ var data = {
 			{name: 'smoke', buildIdentifier: '21', progress: 0}
 		]
 	},
-	environment_components: [
+	environment_pipeline: [
 		{name: 'terraform/vault', status: 'green'},
 		{name: 'terraform/bastion', status: 'green'},
 		{name: 'terraform/private', status: 'green'},
