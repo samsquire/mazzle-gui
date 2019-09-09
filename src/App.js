@@ -37,9 +37,10 @@ function appReducer(state = INITIAL_STATE, action) {
 			var newState = Object.assign(state, {
 				components: state.components.map((item, index) => {
 					if (item.name === action.name) {
-						console.log("found component");
-						item.process = action.process;
-						return item;
+						var newItem = Object.assign({}, item);
+						newItem.process = action.process;
+						
+						return newItem;
 					}
 					return item;
 				})
