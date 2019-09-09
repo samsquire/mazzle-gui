@@ -132,22 +132,25 @@ class EnvironmentPipeline extends React.Component {
 		super(props);
 	}
 	render() {
-		var items = (this.props.pipeline.map((item, index) => {
-			var variant = {green: 'success', 'red': 'danger'}[item.status]
-			return  <Card className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '9rem' }}>
-		  <Card.Body>
-			<Card.Title>{ item.name }</Card.Title>
-			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
-			<Card.Text>
-			  <ProgressBar variant={variant} now="100" />
-			</Card.Text>
-			<Card.Link href="#">View</Card.Link>
-			<Card.Link href="#">Another Link</Card.Link>
-		  </Card.Body>
-		</Card>
+		var items = (this.props.pipeline.map((group, index) => {
+			
+			return group.map((item, index) => { 
+				var variant = {green: 'success', 'red': 'danger'}[item.status]
+				return  <Card className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '9rem' }}>
+			  <Card.Body>
+				<Card.Title>{ item.name }</Card.Title>
+				<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
+				<Card.Text>
+				  <ProgressBar variant={variant} now="100" />
+				</Card.Text>
+				<Card.Link href="#">View</Card.Link>
+				<Card.Link href="#">Another Link</Card.Link>
+			  </Card.Body>
+			</Card>
+				});
 		}));
-		var chunks = chunk(items, 8);
-		var rows = chunks.map((item, index) => {
+	
+		var rows = items.map((item, index) => {
 			var columns = item.map((cell, index) => { return (<Col>{cell}</Col>)});
 			return (<Row>{columns}</Row>)
 		});
