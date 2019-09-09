@@ -16,7 +16,11 @@ import Col from 'react-bootstrap/Col'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { createStore, combineReducers } from 'redux';
 
-const INITIAL_STATE = {};
+const INITIAL_STATE = {
+	latest: {commands: []},
+	pipeline: []
+	components: []
+};
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
 const PROGRESS = 'PROGRESS';
