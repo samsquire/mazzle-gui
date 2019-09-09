@@ -33,7 +33,7 @@ function appReducer(state = INITIAL_STATE, action) {
 		case INIT:
 			return Object.assign(state, action.state);
 		case BUILD_CHANGING:
-			
+			console.log("build changing");
 			return Object.assign(state, {
 				components: state.components.map((item, index) => {
 					if (item.name === action.name) {
