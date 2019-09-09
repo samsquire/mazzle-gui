@@ -114,10 +114,10 @@ class ComponentList extends React.Component {
 			return (
 		 <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
-			<Card.Title><ProgressBar animated={attributes.animated} variant={variant} now="100" />{ item.name }</Card.Title>
+			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
-			  
+			  <ProgressBar animated={attributes.animated} variant={variant} now="100" />
 			</Card.Text>
 			<Card.Link href="#">View</Card.Link>
 			<Card.Link href="#">Another Link</Card.Link>
