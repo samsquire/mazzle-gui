@@ -119,7 +119,7 @@ class ComponentList extends React.Component {
 			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
-			  <ProgressBar variant={variant} now="100" />
+			  <ProgressBar animated={attributes.animated} variant={variant} now="100" />
 			</Card.Text>
 			<Card.Link href="#">View</Card.Link>
 			<Card.Link href="#">Another Link</Card.Link>
