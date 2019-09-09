@@ -144,7 +144,6 @@ class EnvironmentPipeline extends React.Component {
 				  <ProgressBar variant={variant} now="100" />
 				</Card.Text>
 				<Card.Link href="#">View</Card.Link>
-				<Card.Link href="#">Another Link</Card.Link>
 			  </Card.Body>
 			</Card>
 				});
