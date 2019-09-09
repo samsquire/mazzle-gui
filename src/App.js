@@ -162,7 +162,7 @@ class LatestComponentStatus extends React.Component {
 		var chunks = chunk(items, 6);
 		var rows = chunks.map((item, index) => {
 			return (<Row>
-			{ item.map((component, index) => {return (<Col key={item.name} className="pl-0 pr-0">{component}</Col>); })} 
+			{ item.map((component, index) => {return (<Col key={component.name} className="pl-0 pr-0">{component}</Col>); })} 
 			</Row>);
 		});
 		
@@ -195,8 +195,8 @@ class EnvironmentPipeline extends React.Component {
 		}));
 	
 		var rows = items.map((item, index) => {
-			var columns = item.map((cell, index) => { return (<Col key={item.name} className="col-sm">{cell}</Col>)});
-			return (<Row>{columns}</Row>)
+			var columns = item.map((cell, index) => { return (<Col key={cell.name} className="col-sm">{cell}</Col>)});
+			return (<Row key={index}>{columns}</Row>)
 		});
 		return (<Container className="d-flex flex-row">
 		{rows}
