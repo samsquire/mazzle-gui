@@ -374,19 +374,19 @@ class App extends React.Component {
 				</div>
 			 </div>
 			 
-			<ComponentList components={this.props.store.getState().app.components} />
+			<ComponentList components={this.props.store.getState().app} />
 			 
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Component View</h2>
 			</div>
 			
-			<LatestComponentStatus latest={this.props.store.getState().app.latest} />
+			<LatestComponentStatus latest={this.props.store.getState().app} />
 			
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Pipeline View</h2>
 			</div>
 			
-			<EnvironmentPipeline pipeline={this.props.store.getState().app.pipeline} />
+			<EnvironmentPipeline pipeline={this.props.store.getState().app} />
 			
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Task View</h2>
