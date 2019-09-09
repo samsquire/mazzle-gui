@@ -107,7 +107,7 @@ class ComponentList extends React.Component {
 		var items = this.props.components.map((item, index) => {
 			var variant = {green: 'success', 'red': 'danger'}[item.status]
 			var attributes = {};
-			if (item.process === "running") {
+			if (item.process == "running") {
 				attributes.animated = true;
 			}
 			
