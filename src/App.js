@@ -18,7 +18,7 @@ import { createStore, combineReducers } from 'redux';
 
 const INITIAL_STATE = {
 	latest: {commands: []},
-	pipeline: []
+	pipeline: [],
 	components: []
 };
 const INIT = 'INIT';
