@@ -154,7 +154,7 @@ class EnvironmentPipeline extends React.Component {
 			var columns = item.map((cell, index) => { return (<Col>{cell}</Col>)});
 			return (<Row>{columns}</Row>)
 		});
-		return (<Container class="d-flex flex-row">
+		return (<Container className="d-flex flex-row">
 		{rows}
 		</Container>)
 	}
