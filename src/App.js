@@ -18,12 +18,13 @@ import { createStore, combineReducers } from 'redux';
 
 const INITIAL_STATE = {};
 const INIT = 'INIT';
-const BUILD_STARTING = 'BUILD_STARTING';
+const BUILD_CHANGING = 'BUILD_CHANGING';
 
-function buildStarting(name) {
+function buildStarting(name, process) {
 	return {
-		type: 'BUILD_STARTING',
-		name: name
+		type: 'BUILD_CHANGING',
+		name: name,
+		process: process
 	};
 }
 
@@ -31,7 +32,7 @@ function appReducer(state = INITIAL_STATE, action) {
 	switch(action.type) {
 		case INIT:
 			return Object.assign(state, action.state);
-		case BUILD_STARTING:
+		case BUILD_CHANGING:
 			
 			return Object.assign(state, {
 				components: state.components.map((item, index) => {
