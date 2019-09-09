@@ -16,7 +16,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 
 const INITIAL_STATE = {};
 
-const BUILT_STARTING = 'BUILD_STARTING';
+const BUILD_STARTING = 'BUILD_STARTING';
 
 function buildStarting() {
 	return {
@@ -26,20 +26,24 @@ function buildStarting() {
 }
 
 function appReducer(state = INITIAL_STATE, action) {
-	
+	switch(action.type) {
+		case BUILD_STARTING:
+			
+		break;
+	}
 }
 
 
 var data = {
 	
 	components: [
-		{name: 'terraform/vault', status: 'green'},
-		{name: 'terraform/bastion', status: 'green'},
-		{name: 'terraform/private', status: 'green'},
-		{name: 'terraform/prometheus', status: 'red'},
-		{name: 'packer/ubuntu-java', status: 'green'},
-		{name: 'packer/authenticated-ami', status: 'green'},
-		{name: 'packer/source-ami', status: 'green'}
+		{name: 'terraform/vault', status: 'green', process: 'ready'},
+		{name: 'terraform/bastion', status: 'green', process: 'ready'},
+		{name: 'terraform/private', status: 'green', process: 'ready'},
+		{name: 'terraform/prometheus', status: 'red', process: 'ready'},
+		{name: 'packer/ubuntu-java', status: 'green', process: 'ready'},
+		{name: 'packer/authenticated-ami', status: 'green', process: 'ready'},
+		{name: 'packer/source-ami', status: 'green', process: 'ready'}
 	],
 	latest: {
 		name: "terraform/vpc",
