@@ -14,6 +14,21 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 
+const INITIAL_STATE = {};
+
+const BUILT_STARTING = 'BUILD_STARTING';
+
+function buildStarting() {
+	return {
+		type: 'BUILD_STARTING',
+		name: 'terraform/bastion/validate'
+	};
+}
+
+function appReducer(state = INITIAL_STATE, action) {
+	
+}
+
 
 var data = {
 	
