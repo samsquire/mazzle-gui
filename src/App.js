@@ -128,7 +128,7 @@ class ComponentList extends React.Component {
 		var chunks = chunk(items, 3);
 		var rows = chunks.map((item, index) => {
 			return (<Row>
-			{ item.map((component, index) => {return (<Col>{component}</Col>); })} 
+			{ item.map((component, index) => {return (<Col key={item.name}>{component}</Col>); })} 
 			</Row>);
 		});
 		
@@ -195,7 +195,7 @@ class EnvironmentPipeline extends React.Component {
 		}));
 	
 		var rows = items.map((item, index) => {
-			var columns = item.map((cell, index) => { return (<Col className="col-sm">{cell}</Col>)});
+			var columns = item.map((cell, index) => { return (<Col key={item.name} className="col-sm">{cell}</Col>)});
 			return (<Row>{columns}</Row>)
 		});
 		return (<Container className="d-flex flex-row">
