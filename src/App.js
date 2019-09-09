@@ -34,7 +34,7 @@ function appReducer(state = INITIAL_STATE, action) {
 			return Object.assign(state, action.state);
 		case BUILD_CHANGING:
 			console.log("build changing");
-			return Object.assign(state, {
+			var newState = Object.assign(state, {
 				components: state.components.map((item, index) => {
 					if (item.name === action.name) {
 						console.log("found component");
@@ -45,8 +45,9 @@ function appReducer(state = INITIAL_STATE, action) {
 					return item;
 				})
 			});
-			
-		break;
+			console.log(newState);
+			return newState
+			break;
 		default:
 		return state;
 	}
