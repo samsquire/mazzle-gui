@@ -19,17 +19,19 @@ const INITIAL_STATE = {};
 
 const BUILD_STARTING = 'BUILD_STARTING';
 
-function buildStarting() {
+function buildStarting(name) {
 	return {
 		type: 'BUILD_STARTING',
-		name: 'terraform/bastion/validate'
+		name: name
 	};
 }
 
 function appReducer(state = INITIAL_STATE, action) {
 	switch(action.type) {
+		case INIT:
+			return Object.assign(state, action.state);
 		case BUILD_STARTING:
-			
+			return Object.assign(state, {})
 		break;
 		default:
 		return state;
@@ -385,5 +387,5 @@ store.subscribe(() => {
 	ReactDOM.render(<App store={store} />, document.getElementById('root'));
 });
 
-store.dispatch({type: 'INIT'});
+store.dispatch({type: 'INIT', state: data});
 export default App;
