@@ -79,7 +79,7 @@ function appReducer(state = INITIAL_STATE, action) {
 
 var rootReducer = combineReducers({app: appReducer})
 
-var store = createStore(rootReducer, INITIAL_STATE);
+var store = createStore(rootReducer, {app: INITIAL_STATE});
 
 var data = {
 	
