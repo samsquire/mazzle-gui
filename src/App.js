@@ -68,7 +68,6 @@ function appReducer(state = INITIAL_STATE, action) {
 					}
 					return command;
 				});
-			console.log("new latest", newLatest);
 			var newState = Object.assign(state, {
 				latest: Object.assign(state.latest, {commands: newCommands})
 			});
