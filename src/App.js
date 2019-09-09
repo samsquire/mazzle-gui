@@ -20,7 +20,7 @@ const INITIAL_STATE = {};
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
 
-function buildStarting(name, process) {
+function buildChanging(name, process) {
 	return {
 		type: 'BUILD_CHANGING',
 		name: name,
@@ -38,7 +38,7 @@ function appReducer(state = INITIAL_STATE, action) {
 				components: state.components.map((item, index) => {
 					if (item.name === action.name) {
 						var changedItem = Object.assign({}, item);
-						item.process = "running";
+						item.process = action.process;
 						return changedItem;
 					}
 					return item;
@@ -405,7 +405,7 @@ store.subscribe(() => {
 store.dispatch({type: 'INIT', state: data});
 
 setTimeout(() => {
-	store.dispatch(buildStarting('terraform/bastion'));
+	store.dispatch(buildChanging('terraform/bastion'));
 }, 5000);
 
 export default App;
