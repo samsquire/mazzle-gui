@@ -41,6 +41,7 @@ function appReducer(state = INITIAL_STATE, action) {
 	switch(action.type) {
 		case INIT:
 			return Object.assign(state, action.state);
+			break;
 		case BUILD_CHANGING:
 			var newState = Object.assign(state, {
 				components: state.components.map((item, index) => {
