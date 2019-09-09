@@ -15,7 +15,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import combineReducers from 'react';
-
+import createStore from 'redux';
 const INITIAL_STATE = {};
 const INIT = 'INIT';
 const BUILD_STARTING = 'BUILD_STARTING';
@@ -48,6 +48,8 @@ function appReducer(state = INITIAL_STATE, action) {
 }
 
 var rootReducer = combineReducers({app: appReducer})
+
+var store = createStore(rootReducer);
 
 var data = {
 	
