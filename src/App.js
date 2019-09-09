@@ -410,7 +410,7 @@ store.subscribe(() => {
 store.dispatch({type: 'INIT', state: data});
 
 setTimeout(() => {
-	store.dispatch(buildChanging('terraform/bastion'));
+	store.dispatch(buildChanging('terraform/bastion', 'running'));
 }, 5000);
 
 export default App;
