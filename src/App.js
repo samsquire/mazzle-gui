@@ -122,6 +122,7 @@ class EnvironmentPipeline extends React.Component {
 	}
 	render() {
 		return this.props.environment_components.map((item, index) => {
+			var variant = {green: 'success', 'red': 'danger'}[item.status]
 			return  <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
 			<Card.Title>{ item.name }</Card.Title>
