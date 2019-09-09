@@ -16,7 +16,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import combineReducers from 'react';
 
 const INITIAL_STATE = {};
-
+const INIT = 'INIT';
 const BUILD_STARTING = 'BUILD_STARTING';
 
 function buildStarting(name) {
@@ -31,7 +31,15 @@ function appReducer(state = INITIAL_STATE, action) {
 		case INIT:
 			return Object.assign(state, action.state);
 		case BUILD_STARTING:
-			return Object.assign(state, {})
+			
+			return Object.assign(state, {
+				components: state.components.map((item, index) => {
+					if (item.name === action.name) {
+						
+					}
+				})
+			});
+			
 		break;
 		default:
 		return state;
