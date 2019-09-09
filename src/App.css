@@ -6,6 +6,10 @@
 	    padding-top: 48px;
 }
 
+pre {
+	text-align: left;
+}
+
 .navbar-brand {
 	padding-top: .75rem;
     padding-bottom: .75rem;
