@@ -39,7 +39,7 @@ function appReducer(state = INITIAL_STATE, action) {
 					if (item.name === action.name) {
 						console.log("found component");
 						item.process = action.process;
-						return changedItem;
+						return item;
 					}
 					return item;
 				})
