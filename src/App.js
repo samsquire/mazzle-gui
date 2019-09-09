@@ -45,7 +45,7 @@ function appReducer(state = INITIAL_STATE, action) {
 				})
 			});
 			console.log(newState);
-			return newState
+			return newState;
 			break;
 		default:
 		return state;
