@@ -339,7 +339,7 @@ class App extends React.Component {
 				
 			  </div>
 			  
-			  <pre>{JSON.stringify(this.props.store.getState(), 4)}</pre>
+			  <pre>{JSON.stringify(this.props.store.getState(), undefined, 4)}</pre>
 			  
 			  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h2 className="h2">Environment</h2>
