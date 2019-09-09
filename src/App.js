@@ -38,7 +38,6 @@ function appReducer(state = INITIAL_STATE, action) {
 					if (item.name === action.name) {
 						var newItem = Object.assign({}, item);
 						newItem.process = action.process;
-						
 						return newItem;
 					}
 					return item;
