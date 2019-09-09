@@ -19,12 +19,21 @@ import { createStore, combineReducers } from 'redux';
 const INITIAL_STATE = {};
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
+const PROGRESS = 'PROGRESS';
 
 function buildChanging(name, process) {
 	return {
 		type: 'BUILD_CHANGING',
 		name: name,
 		process: process
+	};
+}
+
+function progress(name, progress) {
+	return {
+		type: 'PROGRESS',
+		name: name,
+		progress: progress
 	};
 }
 
