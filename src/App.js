@@ -439,4 +439,14 @@ setTimeout(() => {
 	store.dispatch(buildChanging('terraform/bastion', 'running'));
 }, 5000);
 
+let queued = []
+queued.push(store.dispatch(buildChanging('terraform/bastion', 'running')););
+queued.push(store.dispatch(progress('terraform/bastion', 'running')););
+function dispatchTest() {
+	if (queued.length == 0) { return; }
+	queued.unshift()()
+}
+
+setInterval(dispatchTest, 1000);
+
 export default App;
