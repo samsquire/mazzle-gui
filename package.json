@@ -11,7 +11,7 @@
 	"redux": "4.0.4",
 	"react-bootstrap": "1.0.0-beta.12",
 	"react-redux": "7.1.0",
-	"ansi_up": ""
+	"ansi_up": "4.0.4"
   },
   "scripts": {
     "start": "react-scripts start",
