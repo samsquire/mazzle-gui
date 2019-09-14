@@ -15,21 +15,26 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { createStore, combineReducers } from 'redux';
+import io from 'socket.io-client';
 
 const INITIAL_STATE = {
 	latest: {commands: []},
 	pipeline: [],
-	components: []
+	components: [],
+	running: []
 };
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
 const PROGRESS = 'PROGRESS';
+const COMMAND_RUN = 'COMMAND_RUN';
+const COMMAND_FINISH = 'COMMAND_FINISH';
+const RUNNING = 'RUNNING';
 
-function buildChanging(name, process) {
+function buildChanging(name, command) {
 	return {
 		type: 'BUILD_CHANGING',
 		name: name,
-		process: process
+		command: command
 	};
 }
 
@@ -43,15 +48,39 @@ function progress(name, progress) {
 
 function appReducer(state = INITIAL_STATE, action) {
 	switch(action.type) {
+		case COMMAND_FINISH:
+			var newState = Object.assign({}, state);
+			newState.running = newState.running.filter((item) => {
+				if (item.reference == action.reference) {
+					return false;
+				} else {
+					return true;
+				}
+			})
+			return newState;
+			break;
+
+		case COMMAND_RUN:
+			var newState = Object.assign({}, state);
+			newState.running.push({
+				reference: action.reference
+			});
+			return newState;
+			break;
+
 		case INIT:
 			return Object.assign(state, action.state);
 			break;
+		case RUNNING:
+			return Object.assign(state, {"running": action.running});
+			break;
+
 		case BUILD_CHANGING:
 			var newState = Object.assign(state, {
 				components: state.components.map((item, index) => {
 					if (item.name === action.name) {
 						var newItem = Object.assign({}, item);
-						newItem.process = action.process;
+						newItem.command = action.command;
 						return newItem;
 					}
 					return item;
@@ -83,15 +112,15 @@ var rootReducer = combineReducers({app: appReducer})
 var store = createStore(rootReducer, {latest: {commands: []}, app: INITIAL_STATE});
 
 var data = {
-	
+
 	components: [
-		{name: 'terraform/vault', status: 'green', process: 'ready'},
-		{name: 'terraform/bastion', status: 'green', process: 'ready'},
-		{name: 'terraform/private', status: 'green', process: 'ready'},
-		{name: 'terraform/prometheus', status: 'red', process: 'ready'},
-		{name: 'packer/ubuntu-java', status: 'green', process: 'ready'},
-		{name: 'packer/authenticated-ami', status: 'green', process: 'ready'},
-		{name: 'packer/source-ami', status: 'green', process: 'ready'}
+		{name: 'terraform/vault', status: 'green', command: 'ready'},
+		{name: 'terraform/bastion', status: 'green', command: 'ready'},
+		{name: 'terraform/private', status: 'green', command: 'ready'},
+		{name: 'terraform/prometheus', status: 'red', command: 'ready'},
+		{name: 'packer/ubuntu-java', status: 'green', command: 'ready'},
+		{name: 'packer/authenticated-ami', status: 'green', command: 'ready'},
+		{name: 'packer/source-ami', status: 'green', command: 'ready'}
 	],
 	latest: {
 		name: "terraform/vpc",
@@ -129,15 +158,15 @@ class ComponentList extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	
+
 	render() {
 		var items = this.props.components.map((item, index) => {
 			var variant = {green: 'success', 'red': 'danger'}[item.status]
 			var attributes = {};
-			if (item.process == "running") {
+			if (item.command == "running") {
 				attributes.animated = true;
 			}
-			
+
 			return (
 		 <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
@@ -151,26 +180,68 @@ class ComponentList extends React.Component {
 		  </Card.Body>
 		</Card>);
 		});
-		
+
 		var chunks = chunk(items, 3);
 		var rows = chunks.map((item, index) => {
 			return (<Row key={index.toString()}>
-			{ item.map((component, index) => {return (<Col key={component.name}>{component}</Col>); })} 
+			{ item.map((component, index) => {return (<Col key={component.name}>{component}</Col>); })}
 			</Row>);
 		});
-		
+
 		return (<Container>
 		{rows}
 		</Container>)
 	}
 }
 
+class RunningComponent extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		var items = this.props.running.map((item, index) => {
+			var variant = {green: 'success', 'red': 'danger'}[item.status]
+			var attributes = {};
+			attributes.animated = true;
+
+			return (
+		 <Card className="mb-4" style={{ width: '15rem' }}>
+		  <Card.Body>
+			<Card.Title>{ item.reference }</Card.Title>
+			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
+			<Card.Text>
+			  <ProgressBar animated={attributes.animated} variant={variant} now="0" />
+			</Card.Text>
+			<Card.Link href="#">View</Card.Link>
+			<Card.Link href="#">Another Link</Card.Link>
+		  </Card.Body>
+		</Card>);
+		});
+
+		var chunks = chunk(items, 4);
+		var rows = chunks.map((item, index) => {
+			return (<Row key={index.toString()}>
+			{ item.map((component, index) => {return (<Col key={component.name}>{component}</Col>); })}
+			</Row>);
+		});
+
+		return (<Container>
+		{rows}
+		</Container>)
+	}
+}
+
+
+
+
+
 class LatestComponentStatus extends React.Component {
 	constructor(props) {
 		super(props);
 	}
 	render() {
-		console.log(this.props);
+
 		var items = this.props.latest.commands.map((item, index) => {
 			return (
 		 <Card key={item.name} className="mb-4" style={{ width: '10rem' }}>
@@ -180,20 +251,20 @@ class LatestComponentStatus extends React.Component {
 			<Card.Text>
 			{item.buildIdentifier}
 			<ProgressBar striped variant="success" now={item.progress} />
-			
+
 			</Card.Text>
 			<Card.Link href="#">View</Card.Link>
 		  </Card.Body>
 		</Card>);
 		});
-		
+
 		var chunks = chunk(items, 6);
 		var rows = chunks.map((item, index) => {
 			return (<Row>
-			{ item.map((component, index) => {return (<Col key={component.name} className="pl-0 pr-0">{component}</Col>); })} 
+			{ item.map((component, index) => {return (<Col key={component.name} className="pl-0 pr-0">{component}</Col>); })}
 			</Row>);
 		});
-		
+
 		return (<div><h2>{this.props.latest.name}</h2><Container>
 		{rows}
 		</Container></div>)
@@ -206,8 +277,8 @@ class EnvironmentPipeline extends React.Component {
 	}
 	render() {
 		var items = (this.props.pipeline.map((group, index) => {
-			
-			return group.map((item, index) => { 
+
+			return group.map((item, index) => {
 				var variant = {green: 'success', 'red': 'danger'}[item.status]
 				return  <Card  key={item.name} className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '12rem' }}>
 			  <Card.Body>
@@ -221,7 +292,7 @@ class EnvironmentPipeline extends React.Component {
 			</Card>
 				});
 		}));
-	
+
 		var rows = items.map((item, index) => {
 			var columns = item.map((cell, index) => { return (<Col key={cell.name} className="col-sm">{cell}</Col>)});
 			return (<Row key={index}>{columns}</Row>)
@@ -232,61 +303,12 @@ class EnvironmentPipeline extends React.Component {
 	}
 }
 
-class MyThing extends React.Component {
-  constructor(props) {
-    super(props);
-    this.showEditor = this.showEditor.bind(this);
-	this.handleUsernameChange = this.handleUsernameChange.bind(this);
-	this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.state = {
-		currentValue: "Bye",
-		toggled: false,
-		username: "",
-		password: ""
-    };
-  }
-  
-  handleSubmit(event) {
-	  console.log("sign in");
-	  event.preventDefault();
-  }
-  
-  showEditor() {
-	this.setState({toggled: true});	
-  }
-	  
-	handleUsernameChange(event) {
-		this.setState({username: event.target.value});
-	  }
-	  
-	    
-	handlePasswordChange(event) {
-		this.setState({password: event.target.value});
-	  }
-	  
-  render() {
-    return (
-	<Form inline="true"  onSubmit={this.handleSubmit}>
- <Form.Group controlId="formBasicEmail">
-    <Form.Control type="email" placeholder="Enter email" onChange={this.handleUsernameChange} value={this.state.username} />
-    <Form.Control type="password" placeholder="Password" onChange={this.handlePasswordChange} value={this.state.password} />
-	  <Button variant="primary" type="submit">
-    Submit
-  </Button>
-  </Form.Group>
-  </Form>
-
-    )
-  }
-}
-
-
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	
+
 	render() {
 	  return (
 	  <div className="App">
@@ -343,17 +365,17 @@ class App extends React.Component {
 				  </li>
 				</ul>
 
-		   
-				
+
+
 			  </div>
 			</nav>
 
 			<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4">
 			  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 className="h2">Dashboard</h1>
-				
-				
-				
+
+
+
 				<div className="btn-toolbar mb-2 mb-md-0">
 				  <div className="btn-group mr-2">
 					<button className="btn btn-sm btn-outline-secondary">Share</button>
@@ -364,47 +386,47 @@ class App extends React.Component {
 					This week
 				  </button>
 				</div>
-				
+
 			  </div>
-			  
+
 			  <pre>{JSON.stringify(this.props.store.getState(), undefined, 4)}</pre>
-			  
+
 			  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h2 className="h2">Environment</h2>
 			 </div>
 			 <h3>Home</h3>
-		
+
 			  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h2 className="h2">Components</h2>
 			<div className="btn-toolbar mb-2 mb-md-0">
 				<Form.Control type="text" placeholder="Component" />
 				</div>
 			 </div>
-			 
+
 			<ComponentList components={this.props.store.getState().app.components} />
-			 
+
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Component View</h2>
 			</div>
-			
+
 			<LatestComponentStatus latest={this.props.store.getState().app.latest} />
-			
+
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Pipeline View</h2>
 			</div>
-			
+
 			<EnvironmentPipeline pipeline={this.props.store.getState().app.pipeline} />
-			
+
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Task View</h2>
 			</div>
 			<h3>terraform/app/test</h3>
-			
-			
+
+
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Component Build View</h2>
 			</div>
-			 
+
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Task Outputs</h2>
 			</div>
@@ -412,25 +434,31 @@ class App extends React.Component {
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Task Log File</h2>
 			</div>
-			
-			
+
+
 			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Task Artifacts</h2>
 			</div>
-			 
+
 			 <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h2 className="h2">Broken</h2>
-			</div>
-			  
+			 </div>
+
+			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			 <h2 className="h2">Running</h2>
+		 	</div>
+
+			<RunningComponent running={this.props.store.getState().app.running}></RunningComponent>
+
 			  <div className="table-responsive">
-			   
+
 			  </div>
 			</main>
 		  </div>
 		</div>
 		</div>
-		
-		
+
+
 	  );
 	}
 }
@@ -440,7 +468,21 @@ store.subscribe(() => {
 	ReactDOM.render(<App store={store} />, document.getElementById('root'));
 });
 
-store.dispatch({type: 'INIT', state: data});
+// store.dispatch({type: 'INIT', state: data});
+
+fetch('http://localhost:5000/json').then((response) => {
+	return response.json();
+}).then((json) => {
+	store.dispatch({type: 'INIT', state: json})
+});
+
+setInterval(() => {
+	fetch('http://localhost:5000/running').then((response) => {
+		return response.json();
+	}).then((json) => {
+		store.dispatch({type: "RUNNING", running: json})
+	});
+}, 1000);
 
 setTimeout(() => {
 	store.dispatch(buildChanging('terraform/bastion', 'running'));
@@ -463,4 +505,15 @@ function dispatchTest() {
 }
 setInterval(dispatchTest, 1000);
 
+/*
+var socket = io({transports: ['websocket', 'polling']});
+socket.on('event', function(data) {
+		console.log(data);
+		store.dispatch(data);
+});
+
+socket.on('connect', function() {
+		socket.emit('join', {data: 'I\'m connected!'});
+		console.log("Connected");
+});*/
 export default App;

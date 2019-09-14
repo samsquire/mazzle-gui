@@ -8,6 +8,7 @@
 
 pre {
 	text-align: left;
+  max-height: 800px;
 }
 
 .navbar-brand {
