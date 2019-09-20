@@ -18,10 +18,11 @@ import { createStore, combineReducers } from 'redux';
 import io from 'socket.io-client';
 
 const INITIAL_STATE = {
-	latest: {commands: []},
+	latest: [],
 	pipeline: [],
 	components: [],
-	running: []
+	running: [],
+	environments: []
 };
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
@@ -29,6 +30,8 @@ const PROGRESS = 'PROGRESS';
 const COMMAND_RUN = 'COMMAND_RUN';
 const COMMAND_FINISH = 'COMMAND_FINISH';
 const RUNNING = 'RUNNING';
+const LATEST = 'LATEST';
+const UPDATE = 'UPDATE';
 
 function buildChanging(name, command) {
 	return {
@@ -48,6 +51,7 @@ function progress(name, progress) {
 
 function appReducer(state = INITIAL_STATE, action) {
 	switch(action.type) {
+
 		case COMMAND_FINISH:
 			var newState = Object.assign({}, state);
 			newState.running = newState.running.filter((item) => {
@@ -71,8 +75,18 @@ function appReducer(state = INITIAL_STATE, action) {
 		case INIT:
 			return Object.assign(state, action.state);
 			break;
+
 		case RUNNING:
 			return Object.assign(state, {"running": action.running});
+			break;
+
+		case LATEST:
+			return Object.assign(state, {"latest": action.latest});
+			break;
+
+
+		case UPDATE:
+			return Object.assign(state, action.state);
 			break;
 
 		case BUILD_CHANGING:
@@ -88,20 +102,25 @@ function appReducer(state = INITIAL_STATE, action) {
 			});
 			return newState;
 			break;
+
 		case PROGRESS:
-			var newCommands = state.latest.commands.map((command, index) => {
-					if (command.name === action.name) {
-						var newItem = Object.assign({}, command);
-						newItem.progress = action.progress;
-						return newItem;
-					}
-					return command;
-				});
+			var newComponents = state.latest.map((component, index) => {
+						component.commands = component.commands.map((command, index) => {
+							if (command.name === action.name) {
+								var newItem = Object.assign({}, command);
+								newItem.progress = action.progress;
+								return newItem;
+							}
+							return command;
+						});
+						return component;
+					});
 			var newState = Object.assign(state, {
-				latest: Object.assign(state.latest, {commands: newCommands})
+				latest: newComponents
 			});
 			return newState;
 			break;
+
 		default:
 		return state;
 	}
@@ -109,7 +128,7 @@ function appReducer(state = INITIAL_STATE, action) {
 
 var rootReducer = combineReducers({app: appReducer})
 
-var store = createStore(rootReducer, {latest: {commands: []}, app: INITIAL_STATE});
+var store = createStore(rootReducer, {app: INITIAL_STATE});
 
 var data = {
 
@@ -122,8 +141,8 @@ var data = {
 		{name: 'packer/authenticated-ami', status: 'green', command: 'ready'},
 		{name: 'packer/source-ami', status: 'green', command: 'ready'}
 	],
-	latest: {
-		name: "terraform/vpc",
+	latest: [
+		{name: "terraform/vpc",
 		commands: [
 			{name: 'validate', buildIdentifier: '21', progress: 100},
 			{name: 'test', buildIdentifier: '21', progress: 100},
@@ -133,8 +152,8 @@ var data = {
 			{name: 'deploy', buildIdentifier: '21', progress: 0},
 			{name: 'release', buildIdentifier: '21', progress: 0},
 			{name: 'smoke', buildIdentifier: '21', progress: 0}
-		]
-	},
+		]}
+	],
 	pipeline: [
 		[{name: 'terraform/vault', status: 'green'},
 		{name: 'terraform/bastion', status: 'green'},
@@ -157,6 +176,19 @@ function chunk(arr, chunkSize) {
 class ComponentList extends React.Component {
 	constructor(props) {
 		super(props);
+		this.triggerBuild = this.triggerBuild.bind(this);
+	}
+
+	triggerBuild(item, e) {
+		console.log(item);
+		fetch('trigger', {
+			method: "POST",
+			headers: {
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+			body: JSON.stringify(item)
+		})
 	}
 
 	render() {
@@ -173,10 +205,11 @@ class ComponentList extends React.Component {
 			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
-			  <ProgressBar animated={attributes.animated} variant={variant} now="100" />
+			  <ProgressBar animated={attributes.animated} variant={variant} now={item.progress} />
 			</Card.Text>
-			<Card.Link href="#">View</Card.Link>
-			<Card.Link href="#">Another Link</Card.Link>
+			<Card.Link onClick={(e) => { this.props.changer('component', item) }}>View</Card.Link>
+			<Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>
+
 		  </Card.Body>
 		</Card>);
 		});
@@ -194,6 +227,57 @@ class ComponentList extends React.Component {
 	}
 }
 
+class EnvironmentView extends React.Component {
+	constructor(props) {
+		super(props);
+		this.triggerEnvironment = this.triggerEnvironment.bind(this);
+	}
+
+	triggerEnvironment(environment, event) {
+		console.log("Full trigger of environment", environment);
+
+		fetch('trigger-environment', {
+			method: "POST",
+			headers: {
+						'Content-Type': 'application/json',
+						// 'Content-Type': 'application/x-www-form-urlencoded',
+				},
+			body: JSON.stringify({environment: environment.name})
+		})
+	}
+
+	render() {
+		var environments = this.props.environments.map((environment, index) => {
+			var variant = {"broken": "danger", "ready": "success", "building": "success"}[environment["status"]]
+			var attributes = {}
+			if (environment["status"] == "building") {
+				attributes.animated = true;
+			}
+			return (<Col key={environment.name}>
+			 <Card className="mb-4" style={{ width: '15rem' }}>
+			  <Card.Body>
+				<Card.Title>{ environment.name }</Card.Title>
+				<Card.Subtitle className="mb-2 text-muted">{environment.facts}</Card.Subtitle>
+				<Card.Text>
+				  <ProgressBar variant={variant} animated={attributes.animated} now={environment.progress} />
+				</Card.Text>
+				<Card.Link onClick={(e) => this.triggerEnvironment(environment, e)}>Run Pipeline</Card.Link>
+			  </Card.Body>
+			</Card></Col>)
+		});
+		return (<div><Container><Row>{environments}</Row></Container></div>);
+	}
+}
+
+class RunningList extends React.Component {
+	constructor(props) {
+
+	}
+	render() {
+		return <div></div>
+	}
+}
+
 class RunningComponent extends React.Component {
 	constructor(props) {
 		super(props);
@@ -208,10 +292,10 @@ class RunningComponent extends React.Component {
 			return (
 		 <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
-			<Card.Title>{ item.reference }</Card.Title>
+			<Card.Title>{ item.id }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
-			  <ProgressBar animated={attributes.animated} variant={variant} now="0" />
+			  <ProgressBar animated={attributes.animated} variant={variant} now={item.progress} />
 			</Card.Text>
 			<Card.Link href="#">View</Card.Link>
 			<Card.Link href="#">Another Link</Card.Link>
@@ -233,41 +317,49 @@ class RunningComponent extends React.Component {
 }
 
 
-
-
-
 class LatestComponentStatus extends React.Component {
 	constructor(props) {
 		super(props);
+		this.triggerCommand = this.triggerCommand.bind(this);
+	}
+	triggerCommand(component, command) {
+		console.log(component, command);
+		fetch('trigger', {
+			method: "POST",
+			headers: {
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+			body: JSON.stringify({name: component["name"] + "/" + command["name"]})
+		})
 	}
 	render() {
 
-		var items = this.props.latest.commands.map((item, index) => {
-			return (
-		 <Card key={item.name} className="mb-4" style={{ width: '10rem' }}>
-		  <Card.Body>
-			<Card.Title>{ item.name }</Card.Title>
-			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
-			<Card.Text>
-			{item.buildIdentifier}
-			<ProgressBar striped variant="success" now={item.progress} />
+			var items = this.props.latest.map((component, index) => {
 
-			</Card.Text>
-			<Card.Link href="#">View</Card.Link>
-		  </Card.Body>
-		</Card>);
+			var cards = component.commands.map((item, index) => {
+			return (<Col key={item.name}>
+				 <Card key={item.name} className="mb-4" style={{ width: '10rem' }}>
+					<Card.Body>
+					<Card.Title>{ item.name }</Card.Title>
+					<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
+					<Card.Text>
+					{item.buildIdentifier}
+					<ProgressBar striped variant="success" now={item.progress} />
+
+					</Card.Text>
+					<Card.Link onClick={(e) => this.triggerCommand(component, item, e)}>Trigger</Card.Link>
+					<Card.Link href="#">View</Card.Link>
+					</Card.Body>
+				</Card></Col>);
+			});
+			return (<div><h2>{component.name}</h2><Row>{cards}</Row></div>);
 		});
 
-		var chunks = chunk(items, 6);
-		var rows = chunks.map((item, index) => {
-			return (<Row>
-			{ item.map((component, index) => {return (<Col key={component.name} className="pl-0 pr-0">{component}</Col>); })}
-			</Row>);
-		});
 
-		return (<div><h2>{this.props.latest.name}</h2><Container>
-		{rows}
-		</Container></div>)
+		return (<div><Container><Row>
+		{items}
+		</Row></Container></div>)
 	}
 }
 
@@ -280,12 +372,12 @@ class EnvironmentPipeline extends React.Component {
 
 			return group.map((item, index) => {
 				var variant = {green: 'success', 'red': 'danger'}[item.status]
-				return  <Card  key={item.name} className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '12rem' }}>
+				return  <Card key={item.name} className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '12rem' }}>
 			  <Card.Body>
 				<Card.Title></Card.Title>
 				<Card.Subtitle className="mb-2 text-muted">{ item.name }</Card.Subtitle>
 				<Card.Text>
-				  <ProgressBar variant={variant} now="100" />
+				  <ProgressBar variant={variant} now={item.progress} />
 				</Card.Text>
 				<Card.Link href="#">View</Card.Link>
 			  </Card.Body>
@@ -303,163 +395,213 @@ class EnvironmentPipeline extends React.Component {
 	}
 }
 
-
-class App extends React.Component {
+class Screens extends React.Component {
 	constructor(props) {
 		super(props);
 	}
 
 	render() {
-	  return (
-	  <div className="App">
-	   <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-		  <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">devops-pipeline</a>
-		  <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" />
-		  <ul className="navbar-nav px-3">
-			<li className="nav-item text-nowrap">
-			  <a className="nav-link" href="#">Sign out</a>
-			</li>
-		  </ul>
-		</nav>
+		return ( <div className="App">
+ 	   <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+ 		  <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">devops-pipeline</a>
+ 		  <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" />
+ 		  <ul className="navbar-nav px-3">
+ 			<li className="nav-item text-nowrap">
+ 			  <a className="nav-link" href="#">Sign out</a>
+ 			</li>
+ 		  </ul>
+ 		</nav>
 
-		<div className="container-fluid">
-		  <div className="row">
-			<nav className="col-md-2 d-none d-md-block bg-light sidebar">
-			  <div className="sidebar-sticky pt-3">
-				<ul className="nav flex-column">
-				  <li className="nav-item">
-					<a className="nav-link active" href="#">
-					  <span data-feather="home"></span>
-					  Dashboard <span className="sr-only">(current)</span>
+ 		<div className="container-fluid">
+ 		  <div className="row">
+ 			<nav className="col-md-2 d-none d-md-block bg-light sidebar">
+ 			  <div className="sidebar-sticky pt-3">
+ 				<ul className="nav flex-column">
+ 				  <li className="nav-item">
+ 					<a className="nav-link active" href="#">
+ 					  <span data-feather="home"></span>
+ 					  Dashboard <span className="sr-only">(current)</span>
+ 					</a>
+ 				  </li>
+ 				  <li className="nav-item">
+ 					<a className="nav-link" onClick={(e) => {this.props.changer("components")}}>
+ 					  <span data-feather="file"></span>
+ 					  Components
+ 					</a>
+ 				  </li>
+ 				  <li className="nav-item">
+ 					<a className="nav-link" onClick={(e) => {this.props.changer("environments")}}>
+ 					  <span data-feather="shopping-cart"></span>
+ 					  Environments
+ 					</a>
+ 				  </li>
+ 				  <li className="nav-item">
+ 					<a className="nav-link"  onClick={(e) => {this.props.changer("broken")}}>
+ 					  <span data-feather="users"></span>
+ 					  Broken
+ 					</a>
+ 				  </li>
+ 				  <li className="nav-item">
+ 					<a className="nav-link" onClick={(e) => {this.props.changer("pipeline")}}>
+ 					  <span data-feather="bar-chart-2"></span>
+ 					  Pipeline
+ 					</a>
+ 				  </li>
+ 				  <li className="nav-item">
+ 					<a className="nav-link" onClick={(e) => {this.props.changer("running")}}>
+ 					  <span data-feather="layers"></span>
+ 					  Running
+ 					</a>
+ 				  </li>
+					<li className="nav-item">
+					<a className="nav-link" onClick={(e) => {this.props.changer("debug")}}>
+						<span data-feather="layers"></span>
+						Debug
 					</a>
-				  </li>
-				  <li className="nav-item">
-					<a className="nav-link" href="#">
-					  <span data-feather="file"></span>
-					  Components
-					</a>
-				  </li>
-				  <li className="nav-item">
-					<a className="nav-link" href="#">
-					  <span data-feather="shopping-cart"></span>
-					  Environments
-					</a>
-				  </li>
-				  <li className="nav-item">
-					<a className="nav-link" href="#">
-					  <span data-feather="users"></span>
-					  Tasks
-					</a>
-				  </li>
-				  <li className="nav-item">
-					<a className="nav-link" href="#">
-					  <span data-feather="bar-chart-2"></span>
-					  Jobs
-					</a>
-				  </li>
-				  <li className="nav-item">
-					<a className="nav-link" href="#">
-					  <span data-feather="layers"></span>
-					  Tooling
-					</a>
-				  </li>
-				</ul>
+					</li>
+
+ 						</ul>
+					</div></nav>
+ 			</div>
+		</div>
+		{this.props.children}
+		</div>
+	);
+	}
+}
+
+class Page extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+	render() {
+		console.log(this.props.currentscreen);
+		if (this.props.currentscreen === this.props.target) {
+			return this.props.children;
+		}
+		return [];
+	}
+}
+
+class App extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {screen: "anotherthing"};
+		this.setScreen = this.setScreen.bind(this);
+
+	}
+
+	setScreen(screen) {
+		this.setState({
+			screen: screen
+		});
+	}
+
+	render() {
+			var screens = (<Screens changer={this.setScreen}>
+				<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4">
+				  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h1 className="h2">Dashboard</h1>
 
 
 
-			  </div>
-			</nav>
+					<div className="btn-toolbar mb-2 mb-md-0">
+					  <div className="btn-group mr-2">
+						<button className="btn btn-sm btn-outline-secondary">Share</button>
+						<button className="btn btn-sm btn-outline-secondary">Export</button>
+					  </div>
+					  <button className="btn btn-sm btn-outline-secondary dropdown-toggle">
+						<span data-feather="calendar"></span>
+						This week
+					  </button>
+					</div>
 
-			<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4">
-			  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h1 className="h2">Dashboard</h1>
-
-
-
-				<div className="btn-toolbar mb-2 mb-md-0">
-				  <div className="btn-group mr-2">
-					<button className="btn btn-sm btn-outline-secondary">Share</button>
-					<button className="btn btn-sm btn-outline-secondary">Export</button>
 				  </div>
-				  <button className="btn btn-sm btn-outline-secondary dropdown-toggle">
-					<span data-feather="calendar"></span>
-					This week
-				  </button>
+					<Page currentscreen={this.state.screen} target="debug">
+				  <pre>{JSON.stringify(this.props.store.getState(), undefined, 4)}</pre>
+					</Page>
+					<Page currentscreen={this.state.screen} target="environments">
+							<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+							<h2 className="h2">Environment</h2>
+							</div>
+
+							 <EnvironmentView environments={this.props.store.getState().app.environments} />
+
+				 	</Page>
+
+				<Page currentscreen={this.state.screen} target="components">
+					<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h2 className="h2">Components</h2>
+					<div className="btn-toolbar mb-2 mb-md-0">
+						<Form.Control type="text" placeholder="Component" />
+						</div>
+					 </div>
+
+
+				<ComponentList
+					components={this.props.store.getState().app.components}
+						changer={this.setScreen} />
+		 		</Page>
+
+				<Page currentscreen={this.state.screen} target="component">
+				<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h2 className="h2">Component View</h2>
 				</div>
 
-			  </div>
+				<LatestComponentStatus
+					latest={this.props.store.getState().app.latest} />
+				</Page>
 
-			  <pre>{JSON.stringify(this.props.store.getState(), undefined, 4)}</pre>
-
-			  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			<h2 className="h2">Environment</h2>
-			 </div>
-			 <h3>Home</h3>
-
-			  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			<h2 className="h2">Components</h2>
-			<div className="btn-toolbar mb-2 mb-md-0">
-				<Form.Control type="text" placeholder="Component" />
+				<Page
+					currentscreen={this.state.screen}
+					target="pipeline">
+				<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h2 className="h2">Pipeline View</h2>
 				</div>
-			 </div>
 
-			<ComponentList components={this.props.store.getState().app.components} />
+				<EnvironmentPipeline
+					pipeline={this.props.store.getState().app.pipeline} />
+				</Page>
 
-			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h2 className="h2">Component View</h2>
-			</div>
+				<Page
+					currentscreen={this.state.screen}
+					target="task">
+				<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h2 className="h2">Task View</h2>
+				</div>
+				</Page>
 
-			<LatestComponentStatus latest={this.props.store.getState().app.latest} />
+				<Page
+				currentscreen={this.state.screen}
+				target="component-build">
+					<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+						<h2 className="h2">Component Build View</h2>
+					</div>
+				</Page>
 
-			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h2 className="h2">Pipeline View</h2>
-			</div>
+				<Page currentscreen={this.state.screen} target="broken">
+				 <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h2 className="h2">Broken</h2>
+				 </div>
+				</Page>
 
-			<EnvironmentPipeline pipeline={this.props.store.getState().app.pipeline} />
+				 <Page currentscreen={this.state.screen} target="running">
+							<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+							 <h2 className="h2">Running</h2>
+						 	</div>
 
-			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h2 className="h2">Task View</h2>
-			</div>
-			<h3>terraform/app/test</h3>
+							<RunningComponent running={this.props.store.getState().app.running}></RunningComponent>
+				</Page>
+				  <div className="table-responsive">
 
+				  </div>
+				</main>
+			</Screens>);
 
-			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h2 className="h2">Component Build View</h2>
-			</div>
+		return (<div>
+			{screens}
+		</div>);
 
-			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h2 className="h2">Task Outputs</h2>
-			</div>
-
-			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h2 className="h2">Task Log File</h2>
-			</div>
-
-
-			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h2 className="h2">Task Artifacts</h2>
-			</div>
-
-			 <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h2 className="h2">Broken</h2>
-			 </div>
-
-			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-			 <h2 className="h2">Running</h2>
-		 	</div>
-
-			<RunningComponent running={this.props.store.getState().app.running}></RunningComponent>
-
-			  <div className="table-responsive">
-
-			  </div>
-			</main>
-		  </div>
-		</div>
-		</div>
-
-
-	  );
 	}
 }
 
@@ -468,7 +610,7 @@ store.subscribe(() => {
 	ReactDOM.render(<App store={store} />, document.getElementById('root'));
 });
 
-// store.dispatch({type: 'INIT', state: data});
+store.dispatch({type: 'INIT', state: data});
 
 fetch('http://localhost:5000/json').then((response) => {
 	return response.json();
@@ -477,12 +619,12 @@ fetch('http://localhost:5000/json').then((response) => {
 });
 
 setInterval(() => {
-	fetch('http://localhost:5000/running').then((response) => {
+	fetch('http://localhost:5000/json').then((response) => {
 		return response.json();
 	}).then((json) => {
-		store.dispatch({type: "RUNNING", running: json})
+		store.dispatch({type: "UPDATE", state: json})
 	});
-}, 1000);
+}, 10000);
 
 setTimeout(() => {
 	store.dispatch(buildChanging('terraform/bastion', 'running'));
