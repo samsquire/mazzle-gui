@@ -64,6 +64,8 @@ function appReducer(state = INITIAL_STATE, action) {
 			return newState;
 			break;
 
+
+
 		case COMMAND_RUN:
 			var newState = Object.assign({}, state);
 			newState.running.push({
@@ -285,14 +287,14 @@ class RunningComponent extends React.Component {
 
 	render() {
 		var items = this.props.running.map((item, index) => {
-			var variant = {green: 'success', 'red': 'danger'}[item.status]
+			var variant = {running: 'success', 'ready': 'info'}[item.status]
 			var attributes = {};
 			attributes.animated = true;
 
 			return (
 		 <Card className="mb-4" style={{ width: '15rem' }}>
 		  <Card.Body>
-			<Card.Title>{ item.id }</Card.Title>
+			<Card.Title>{ item.reference }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 			<Card.Text>
 			  <ProgressBar animated={attributes.animated} variant={variant} now={item.progress} />
