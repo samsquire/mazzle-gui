@@ -22,7 +22,8 @@ const INITIAL_STATE = {
 	pipeline: [],
 	components: [],
 	running: [],
-	environments: []
+	environments: [],
+	filtering: ""
 };
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
@@ -32,6 +33,7 @@ const COMMAND_FINISH = 'COMMAND_FINISH';
 const RUNNING = 'RUNNING';
 const LATEST = 'LATEST';
 const UPDATE = 'UPDATE';
+const FILTER = 'FILTER';
 
 function buildChanging(name, command) {
 	return {
@@ -49,6 +51,22 @@ function progress(name, progress) {
 	};
 }
 
+function filter(term) {
+	return {
+		type: FILTER,
+		term: term
+	}
+}
+
+function filtering(state, list, key) {
+	return list.filter((item) => {
+		if (item[key].indexOf(state.filtering) != -1) {
+			return true;
+		}
+		return false;
+	})
+}
+
 function appReducer(state = INITIAL_STATE, action) {
 	switch(action.type) {
 
@@ -64,7 +82,11 @@ function appReducer(state = INITIAL_STATE, action) {
 			return newState;
 			break;
 
-
+		case FILTER:
+			var newState = Object.assign({}, state);
+			Object.assign(newState, {filtering: action.term});
+			return newState;
+			break;
 
 		case COMMAND_RUN:
 			var newState = Object.assign({}, state);
@@ -133,7 +155,7 @@ var rootReducer = combineReducers({app: appReducer})
 var store = createStore(rootReducer, {app: INITIAL_STATE});
 
 var data = {
-
+  filtering: "",
 	components: [
 		{name: 'terraform/vault', status: 'green', command: 'ready'},
 		{name: 'terraform/bastion', status: 'green', command: 'ready'},
@@ -194,7 +216,7 @@ class ComponentList extends React.Component {
 	}
 
 	render() {
-		var items = this.props.components.map((item, index) => {
+		var items = filtering(store.getState().app, this.props.components, 'name').map((item, index) => {
 			var variant = {green: 'success', 'red': 'danger'}[item.status]
 			var attributes = {};
 			if (item.command == "running") {
@@ -397,17 +419,28 @@ class EnvironmentPipeline extends React.Component {
 	}
 }
 
+
+
 class Screens extends React.Component {
 	constructor(props) {
 		super(props);
+		this.handleChange = this.handleChange.bind(this)
 	}
 
+	handleChange(event) {
+		store.dispatch(filter(event.target.value));
+	}
+
+
 	render() {
+		var searchBox = <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" onChange={this.handleChange} />
+
 		return ( <div className="App">
  	   <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
  		  <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">devops-pipeline</a>
- 		  <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" />
- 		  <ul className="navbar-nav px-3">
+ 		  {searchBox}
+
+			<ul className="navbar-nav px-3">
  			<li className="nav-item text-nowrap">
  			  <a className="nav-link" href="#">Sign out</a>
  			</li>
