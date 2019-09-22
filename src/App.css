@@ -11,6 +11,12 @@ pre {
   max-height: 800px;
 }
 
+#console {
+  color: white;
+  max-height: 250px;
+  max_width: 100vw;
+}
+
 .navbar-brand {
 	padding-top: .75rem;
     padding-bottom: .75rem;

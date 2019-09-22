@@ -16,6 +16,7 @@ import Col from 'react-bootstrap/Col'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { createStore, combineReducers } from 'redux';
 import io from 'socket.io-client';
+import AnsiUp from 'ansi_up';
 
 const INITIAL_STATE = {
 	latest: [],
@@ -23,7 +24,10 @@ const INITIAL_STATE = {
 	components: [],
 	running: [],
 	environments: [],
-	filtering: ""
+	filtering: "",
+	selection: "",
+	console: "",
+	environment: ""
 };
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
@@ -34,10 +38,13 @@ const RUNNING = 'RUNNING';
 const LATEST = 'LATEST';
 const UPDATE = 'UPDATE';
 const FILTER = 'FILTER';
+const LOGS = 'LOGS';
+const COMPONENT_SELECTION = 'COMPONENT_SELECTION';
+const ENVIRONMENT_SELECTION = 'ENVIRONMENT_SELECTION';
 
 function buildChanging(name, command) {
 	return {
-		type: 'BUILD_CHANGING',
+		type: BUILD_CHANGING,
 		name: name,
 		command: command
 	};
@@ -45,10 +52,17 @@ function buildChanging(name, command) {
 
 function progress(name, progress) {
 	return {
-		type: 'PROGRESS',
+		type: PROGRESS,
 		name: name,
 		progress: progress
 	};
+}
+
+function environmentSelection(environment) {
+	return {
+		type: ENVIRONMENT_SELECTION,
+		environment: environment
+	}
 }
 
 function filter(term) {
@@ -58,9 +72,34 @@ function filter(term) {
 	}
 }
 
+function componentSelection(component) {
+	return {
+		type: COMPONENT_SELECTION,
+		selection: component
+	}
+}
+
 function filtering(state, list, key) {
 	return list.filter((item) => {
 		if (item[key].indexOf(state.filtering) != -1) {
+			return true;
+		}
+		return false;
+	})
+}
+
+function selection(state, list, key) {
+	return list.filter((item) => {
+		if (item[key].indexOf(state.selection) != -1) {
+			return true;
+		}
+		return false;
+	})
+}
+
+function environmentView(store, list) {
+	return list.filter((item) => {
+		if (item.environment === store.getState().app.environment) {
 			return true;
 		}
 		return false;
@@ -88,6 +127,18 @@ function appReducer(state = INITIAL_STATE, action) {
 			return newState;
 			break;
 
+		case COMPONENT_SELECTION:
+			var newState = Object.assign({}, state);
+			Object.assign(newState, {selection: action.selection});
+			return newState;
+			break;
+
+		case ENVIRONMENT_SELECTION:
+			var newState = Object.assign({}, state);
+			Object.assign(newState, {environment: action.environment, selection: ""});
+			return newState;
+			break;
+
 		case COMMAND_RUN:
 			var newState = Object.assign({}, state);
 			newState.running.push({
@@ -108,8 +159,15 @@ function appReducer(state = INITIAL_STATE, action) {
 			return Object.assign(state, {"latest": action.latest});
 			break;
 
+		case LOGS:
+			return Object.assign(state, {"console": action.console});
+			break
 
 		case UPDATE:
+			if (action.state.filtering == "") {
+				delete action.state.filtering;
+			}
+
 			return Object.assign(state, action.state);
 			break;
 
@@ -157,35 +215,36 @@ var store = createStore(rootReducer, {app: INITIAL_STATE});
 var data = {
   filtering: "",
 	components: [
-		{name: 'terraform/vault', status: 'green', command: 'ready'},
-		{name: 'terraform/bastion', status: 'green', command: 'ready'},
-		{name: 'terraform/private', status: 'green', command: 'ready'},
-		{name: 'terraform/prometheus', status: 'red', command: 'ready'},
-		{name: 'packer/ubuntu-java', status: 'green', command: 'ready'},
-		{name: 'packer/authenticated-ami', status: 'green', command: 'ready'},
-		{name: 'packer/source-ami', status: 'green', command: 'ready'}
+		{name: 'terraform/vault', status: 'green', command: 'ready', environment: "home"},
+		{name: 'terraform/bastion', status: 'green', command: 'ready', environment: "home"},
+		{name: 'terraform/private', status: 'green', command: 'ready', environment: "home"},
+		{name: 'terraform/prometheus', status: 'red', command: 'ready', environment: "home"},
+		{name: 'packer/ubuntu-java', status: 'green', command: 'ready', environment: "home"},
+		{name: 'packer/authenticated-ami', status: 'green', command: 'ready', environment: "home"},
+		{name: 'packer/source-ami', status: 'green', command: 'ready', environment: "home"}
 	],
 	latest: [
 		{name: "terraform/vpc",
+			environment: "home",
 		commands: [
-			{name: 'validate', buildIdentifier: '21', progress: 100},
-			{name: 'test', buildIdentifier: '21', progress: 100},
-			{name: 'package', buildIdentifier: '21', progress: 60},
-			{name: 'plan', buildIdentifier: '21', progress: 0},
-			{name: 'run', buildIdentifier: '21', progress: 0},
-			{name: 'deploy', buildIdentifier: '21', progress: 0},
-			{name: 'release', buildIdentifier: '21', progress: 0},
-			{name: 'smoke', buildIdentifier: '21', progress: 0}
+			{name: 'validate', buildIdentifier: '21', progress: 100, environment: "home"},
+			{name: 'test', buildIdentifier: '21', progress: 100, environment: "home"},
+			{name: 'package', buildIdentifier: '21', progress: 60, environment: "home"},
+			{name: 'plan', buildIdentifier: '21', progress: 0, environment: "home"},
+			{name: 'run', buildIdentifier: '21', progress: 0, environment: "home"},
+			{name: 'deploy', buildIdentifier: '21', progress: 0, environment: "home"},
+			{name: 'release', buildIdentifier: '21', progress: 0, environment: "home"},
+			{name: 'smoke', buildIdentifier: '21', progress: 0, environment: "home"}
 		]}
 	],
 	pipeline: [
-		[{name: 'terraform/vault', status: 'green'},
-		{name: 'terraform/bastion', status: 'green'},
-		{name: 'terraform/private', status: 'green'}],
-		[{name: 'terraform/prometheus', status: 'red'},
-		{name: 'packer/ubuntu-java', status: 'green'}],
-		[{name: 'packer/authenticated-ami', status: 'green'},
-		{name: 'packer/source-ami', status: 'green'}]
+		[{name: 'terraform/vault', status: 'green', environment: "home"},
+		{name: 'terraform/bastion', status: 'green', environment: "home"},
+		{name: 'terraform/private', status: 'green', environment: "home"}],
+		[{name: 'terraform/prometheus', status: 'red', environment: "home"},
+		{name: 'packer/ubuntu-java', status: 'green', environment: "home"}],
+		[{name: 'packer/authenticated-ami', status: 'green', environment: "home"},
+		{name: 'packer/source-ami', status: 'green', environment: "home"}]
 
 	]
 }
@@ -201,6 +260,12 @@ class ComponentList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.triggerBuild = this.triggerBuild.bind(this);
+		this.goToComponent = this.goToComponent.bind(this);
+	}
+
+	goToComponent(component) {
+		this.props.changer('pipeline');
+		store.dispatch(componentSelection(component.name));
 	}
 
 	triggerBuild(item, e) {
@@ -216,7 +281,9 @@ class ComponentList extends React.Component {
 	}
 
 	render() {
-		var items = filtering(store.getState().app, this.props.components, 'name').map((item, index) => {
+		var items = filtering(store.getState().app,
+								environmentView(store, this.props.components), 'name')
+		.map((item, index) => {
 			var variant = {green: 'success', 'red': 'danger'}[item.status]
 			var attributes = {};
 			if (item.command == "running") {
@@ -231,7 +298,7 @@ class ComponentList extends React.Component {
 			<Card.Text>
 			  <ProgressBar animated={attributes.animated} variant={variant} now={item.progress} />
 			</Card.Text>
-			<Card.Link onClick={(e) => { this.props.changer('component', item) }}>View</Card.Link>
+			<Card.Link onClick={(e) => { this.goToComponent(item, e) }}>View</Card.Link>
 			<Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>
 
 		  </Card.Body>
@@ -255,6 +322,11 @@ class EnvironmentView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.triggerEnvironment = this.triggerEnvironment.bind(this);
+		this.switchEnvironment = this.switchEnvironment.bind(this);
+	}
+
+	switchEnvironment(environment) {
+		store.dispatch(environmentSelection(environment.name));
 	}
 
 	triggerEnvironment(environment, event) {
@@ -286,6 +358,7 @@ class EnvironmentView extends React.Component {
 				  <ProgressBar variant={variant} animated={attributes.animated} now={environment.progress} />
 				</Card.Text>
 				<Card.Link onClick={(e) => this.triggerEnvironment(environment, e)}>Run Pipeline</Card.Link>
+				<Card.Link onClick={(e) => this.switchEnvironment(environment, e)}>View</Card.Link>
 			  </Card.Body>
 			</Card></Col>)
 		});
@@ -345,8 +418,11 @@ class LatestComponentStatus extends React.Component {
 	constructor(props) {
 		super(props);
 		this.triggerCommand = this.triggerCommand.bind(this);
+		this.viewLog = this.viewLog.bind(this);
+		this.state = {};
 	}
 	triggerCommand(component, command) {
+
 		console.log(component, command);
 		fetch('trigger', {
 			method: "POST",
@@ -355,11 +431,34 @@ class LatestComponentStatus extends React.Component {
             // 'Content-Type': 'application/x-www-form-urlencoded',
         },
 			body: JSON.stringify({name: component["name"] + "/" + command["name"]})
-		})
+		});
+
 	}
+	viewLog(component, command, event) {
+
+
+
+			fetch('http://localhost:5000/logs', {
+				method: "POST",
+				headers: {
+							'Content-Type': 'application/json'
+					},
+				body: JSON.stringify({component: component, command: command})
+			}).then((response) => {
+				return response.json();
+			}).then((json) => {
+				store.dispatch({type: 'LOGS', console: json.console})
+			});
+
+			this.props.selector(
+					[component["name"], command["name"], "console"].join("/")
+				);
+			this.props.changer("command");
+	}
+
 	render() {
 
-			var items = this.props.latest.map((component, index) => {
+			var items = selection(store.getState().app, environmentView(store, this.props.latest), 'name').map((component, index) => {
 
 			var cards = component.commands.map((item, index) => {
 			return (<Col key={item.name}>
@@ -368,16 +467,16 @@ class LatestComponentStatus extends React.Component {
 					<Card.Title>{ item.name }</Card.Title>
 					<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 					<Card.Text>
-					{item.buildIdentifier}
+					{item.build_number}
 					<ProgressBar striped variant="success" now={item.progress} />
 
 					</Card.Text>
 					<Card.Link onClick={(e) => this.triggerCommand(component, item, e)}>Trigger</Card.Link>
-					<Card.Link href="#">View</Card.Link>
+					<Card.Link onClick={(e) => this.viewLog(component, item, e)}>View</Card.Link>
 					</Card.Body>
 				</Card></Col>);
 			});
-			return (<div><h2>{component.name}</h2><Row>{cards}</Row></div>);
+			return (<div><h2>{component.environment}/{component.name}</h2><Row>{cards}</Row></div>);
 		});
 
 
@@ -419,21 +518,19 @@ class EnvironmentPipeline extends React.Component {
 	}
 }
 
-
-
 class Screens extends React.Component {
 	constructor(props) {
 		super(props);
-		this.handleChange = this.handleChange.bind(this)
+		this.changeScreen = this.changeScreen.bind(this);
 	}
 
-	handleChange(event) {
-		store.dispatch(filter(event.target.value));
-	}
+	changeScreen(newScreen, component) {
+		this.props.changer(newScreen);
 
+	}
 
 	render() {
-		var searchBox = <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" onChange={this.handleChange} />
+		var searchBox = <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" />
 
 		return ( <div className="App">
  	   <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -459,37 +556,37 @@ class Screens extends React.Component {
  					</a>
  				  </li>
  				  <li className="nav-item">
- 					<a className="nav-link" onClick={(e) => {this.props.changer("components")}}>
+ 					<a className="nav-link" onClick={(e) => {this.changeScreen("components")}}>
  					  <span data-feather="file"></span>
  					  Components
  					</a>
  				  </li>
  				  <li className="nav-item">
- 					<a className="nav-link" onClick={(e) => {this.props.changer("environments")}}>
+ 					<a className="nav-link" onClick={(e) => {this.changeScreen("environments")}}>
  					  <span data-feather="shopping-cart"></span>
  					  Environments
  					</a>
  				  </li>
  				  <li className="nav-item">
- 					<a className="nav-link"  onClick={(e) => {this.props.changer("broken")}}>
+ 					<a className="nav-link"  onClick={(e) => {this.changeScreen("broken")}}>
  					  <span data-feather="users"></span>
  					  Broken
  					</a>
  				  </li>
  				  <li className="nav-item">
- 					<a className="nav-link" onClick={(e) => {this.props.changer("pipeline")}}>
+ 					<a className="nav-link" onClick={(e) => {this.changeScreen("pipeline", null)}}>
  					  <span data-feather="bar-chart-2"></span>
  					  Pipeline
  					</a>
  				  </li>
  				  <li className="nav-item">
- 					<a className="nav-link" onClick={(e) => {this.props.changer("running")}}>
+ 					<a className="nav-link" onClick={(e) => {this.changeScreen("running")}}>
  					  <span data-feather="layers"></span>
  					  Running
  					</a>
  				  </li>
 					<li className="nav-item">
-					<a className="nav-link" onClick={(e) => {this.props.changer("debug")}}>
+					<a className="nav-link" onClick={(e) => {this.changeScreen("debug")}}>
 						<span data-feather="layers"></span>
 						Debug
 					</a>
@@ -518,24 +615,84 @@ class Page extends React.Component {
 	}
 }
 
+class Restriction extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+	render() {
+		if (this.props.selection.indexOf(this.props.target) != -1) {
+			return this.props.children;
+		}
+		return [];
+	}
+}
+
+class Console extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+	render() {
+		var ansi_up = new AnsiUp;
+
+		var html = ansi_up.ansi_to_html(this.props.console);
+		var pre = <pre id="console" dangerouslySetInnerHTML={{__html: html}}></pre>;
+
+		return (<Navbar fixed="bottom" bg="dark" variant="dark">
+			{pre}</Navbar>);
+	}
+}
+
+class Position extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		
+		var splitted = this.props.selection.split("/");
+		var places = splitted.map((place, index) => {
+			var reference = splitted.slice(0, index).join("/");
+			return (<Breadcrumb.Item key={place} onClick={(e) => {this.props.selector(reference)}}>{place}</Breadcrumb.Item>)
+		});
+		return (<Breadcrumb>
+			<Breadcrumb.Item>{this.props.environment}</Breadcrumb.Item>
+		  {places}
+		</Breadcrumb>);
+	}
+}
+
 class App extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {screen: "anotherthing"};
+		this.state = {screen: "environments"};
 		this.setScreen = this.setScreen.bind(this);
-
+		this.selector = this.selector.bind(this);
+		this.componentFilterChange = this.componentFilterChange.bind(this);
 	}
 
-	setScreen(screen) {
+	componentFilterChange(event) {
+		store.dispatch(filter(event.target.value));
+	}
+
+	setScreen(screen, component) {
 		this.setState({
 			screen: screen
 		});
+		if (component) {
+			store.dispatch(componentSelection(component.name));
+		}
+	}
+
+	selector(selection) {
+		console.log(selection);
+		store.dispatch(componentSelection(selection));
 	}
 
 	render() {
 			var screens = (<Screens changer={this.setScreen}>
 				<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4">
 				  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<Position environment={store.getState().app.environment} selector={this.selector} selection={store.getState().app.selection}></Position>
 					<h1 className="h2">Dashboard</h1>
 
 
@@ -568,7 +725,7 @@ class App extends React.Component {
 					<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 					<h2 className="h2">Components</h2>
 					<div className="btn-toolbar mb-2 mb-md-0">
-						<Form.Control type="text" placeholder="Component" />
+						<Form.Control type="text" placeholder="Component" value={store.getState().app.filtering} onChange={this.componentFilterChange} />
 						</div>
 					 </div>
 
@@ -578,20 +735,22 @@ class App extends React.Component {
 						changer={this.setScreen} />
 		 		</Page>
 
-				<Page currentscreen={this.state.screen} target="component">
+				<Page currentscreen={this.state.screen} target="pipeline">
 				<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-					<h2 className="h2">Component View</h2>
+					<h2 className="h2">Pipeline View</h2>
 				</div>
 
 				<LatestComponentStatus
-					latest={this.props.store.getState().app.latest} />
+					latest={this.props.store.getState().app.latest}
+					selector={this.selector}
+					changer={this.setScreen} />
 				</Page>
 
 				<Page
 					currentscreen={this.state.screen}
-					target="pipeline">
+					target="task">
 				<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-					<h2 className="h2">Pipeline View</h2>
+					<h2 className="h2">Pipeline</h2>
 				</div>
 
 				<EnvironmentPipeline
@@ -600,9 +759,9 @@ class App extends React.Component {
 
 				<Page
 					currentscreen={this.state.screen}
-					target="task">
+					target="command">
 				<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-					<h2 className="h2">Task View</h2>
+					<h2 className="h2">Command View</h2>
 				</div>
 				</Page>
 
@@ -631,6 +790,11 @@ class App extends React.Component {
 
 				  </div>
 				</main>
+
+				<Restriction selection={store.getState().app.selection} target="console">
+					<Console console={this.props.store.getState().app.console} ></Console>
+				</Restriction>
+
 			</Screens>);
 
 		return (<div>
