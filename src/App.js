@@ -17,6 +17,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import { createStore, combineReducers } from 'redux';
 import io from 'socket.io-client';
 import AnsiUp from 'ansi_up';
+import Interweave from 'interweave';
 
 const INITIAL_STATE = {
 	latest: [],
@@ -635,8 +636,8 @@ class Console extends React.Component {
 		var ansi_up = new AnsiUp;
 
 		var html = ansi_up.ansi_to_html(this.props.console);
-		var pre = <pre id="console" dangerouslySetInnerHTML={{__html: html}}></pre>;
-
+		// var pre = <pre id="console"> dangerouslySetInnerHTML={{__html: html}}></pre>;
+	  var pre = <pre id="console"><Interweave content={html} /></pre>;
 		return (<Navbar fixed="bottom" bg="dark" variant="dark">
 			{pre}</Navbar>);
 	}
@@ -648,7 +649,7 @@ class Position extends React.Component {
 	}
 
 	render() {
-		
+
 		var splitted = this.props.selection.split("/");
 		var places = splitted.map((place, index) => {
 			var reference = splitted.slice(0, index).join("/");
@@ -698,14 +699,7 @@ class App extends React.Component {
 
 
 					<div className="btn-toolbar mb-2 mb-md-0">
-					  <div className="btn-group mr-2">
-						<button className="btn btn-sm btn-outline-secondary">Share</button>
-						<button className="btn btn-sm btn-outline-secondary">Export</button>
-					  </div>
-					  <button className="btn btn-sm btn-outline-secondary dropdown-toggle">
-						<span data-feather="calendar"></span>
-						This week
-					  </button>
+
 					</div>
 
 				  </div>
