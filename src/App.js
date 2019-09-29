@@ -262,6 +262,7 @@ class ComponentList extends React.Component {
 		super(props);
 		this.triggerBuild = this.triggerBuild.bind(this);
 		this.goToComponent = this.goToComponent.bind(this);
+		this.propagateChange = this.propagateChange.bind(this);
 	}
 
 	goToComponent(component) {
@@ -280,6 +281,18 @@ class ComponentList extends React.Component {
 			body: JSON.stringify(item)
 		})
 	}
+
+	propagateChange(item, e) {
+			console.log(item);
+			fetch('propagate', {
+				method: "POST",
+				headers: {
+	            'Content-Type': 'application/json',
+	            // 'Content-Type': 'application/x-www-form-urlencoded',
+	        },
+				body: JSON.stringify(item)
+			})
+		}
 
 	render() {
 		var items = filtering(store.getState().app,
@@ -301,7 +314,7 @@ class ComponentList extends React.Component {
 			</Card.Text>
 			<Card.Link onClick={(e) => { this.goToComponent(item, e) }}>View</Card.Link>
 			<Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>
-
+			<Card.Link onClick={(e) => { this.propagateChange(item, e) }}>Propagate</Card.Link>
 		  </Card.Body>
 		</Card>);
 		});
