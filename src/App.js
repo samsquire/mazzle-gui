@@ -263,6 +263,7 @@ class ComponentList extends React.Component {
 		this.triggerBuild = this.triggerBuild.bind(this);
 		this.goToComponent = this.goToComponent.bind(this);
 		this.propagateChange = this.propagateChange.bind(this);
+      
 	}
 
 	goToComponent(component) {
@@ -305,7 +306,7 @@ class ComponentList extends React.Component {
 			}
 
 			return (
-		 <Card className="mb-4" style={{ width: '15rem' }}>
+		 <Card className="mb-4" style={{ width: '18rem' }}>
 		  <Card.Body>
 			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
@@ -315,6 +316,7 @@ class ComponentList extends React.Component {
 			<Card.Link onClick={(e) => { this.goToComponent(item, e) }}>View</Card.Link>
 			<Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>
 			<Card.Link onClick={(e) => { this.propagateChange(item, e) }}>Propagate</Card.Link>
+            
 		  </Card.Body>
 		</Card>);
 		});
@@ -337,11 +339,24 @@ class EnvironmentView extends React.Component {
 		super(props);
 		this.triggerEnvironment = this.triggerEnvironment.bind(this);
 		this.switchEnvironment = this.switchEnvironment.bind(this);
+        this.validate = this.validate.bind(this);
 	}
 
 	switchEnvironment(environment) {
 		store.dispatch(environmentSelection(environment.name));
-	}
+	}                                      
+                                                    
+    validate(item, e) {
+        console.log(item);
+		fetch('validate', {
+			method: "POST",
+			headers: {
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+			body: JSON.stringify(item)
+		})
+    }
 
 	triggerEnvironment(environment, event) {
 		console.log("Full trigger of environment", environment);
@@ -364,7 +379,7 @@ class EnvironmentView extends React.Component {
 				attributes.animated = true;
 			}
 			return (<Col key={environment.name}>
-			 <Card className="mb-4" style={{ width: '15rem' }}>
+			 <Card className="mb-4" style={{ width: '17rem' }}>
 			  <Card.Body>
 				<Card.Title>{ environment.name }</Card.Title>
 				<Card.Subtitle className="mb-2 text-muted">{environment.facts}</Card.Subtitle>
@@ -373,6 +388,7 @@ class EnvironmentView extends React.Component {
 				</Card.Text>
 				<Card.Link onClick={(e) => this.triggerEnvironment(environment, e)}>Run Pipeline</Card.Link>
 				<Card.Link onClick={(e) => this.switchEnvironment(environment, e)}>View</Card.Link>
+                <Card.Link onClick={(e) => { this.validate(environment, e) }}>Propagate</Card.Link>
 			  </Card.Body>
 			</Card></Col>)
 		});
