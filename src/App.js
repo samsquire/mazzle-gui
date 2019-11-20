@@ -684,7 +684,7 @@ class Position extends React.Component {
 
 					store.dispatch(filter(item));
 			}},
-			1: {name: "Component", screen: "pipeline" },
+			1: {name: "Component", screen: "pipeline", handler: (item, reference) => { console.log(reference); this.props.selector(reference); } },
 			2: {name: "Command", screen: "command"},
 			3: {name: "Screen", screen: "command"}
 		};
