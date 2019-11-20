@@ -11,6 +11,10 @@ pre {
   max-height: 800px;
 }
 
+.card-link {
+    display: block;
+}
+
 #console {
   color: white;
   max-height: 250px;

@@ -263,7 +263,7 @@ class ComponentList extends React.Component {
 		this.triggerBuild = this.triggerBuild.bind(this);
 		this.goToComponent = this.goToComponent.bind(this);
 		this.propagateChange = this.propagateChange.bind(this);
-      
+
 	}
 
 	goToComponent(component) {
@@ -316,7 +316,7 @@ class ComponentList extends React.Component {
 			<Card.Link onClick={(e) => { this.goToComponent(item, e) }}>View</Card.Link>
 			<Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>
 			<Card.Link onClick={(e) => { this.propagateChange(item, e) }}>Propagate</Card.Link>
-            
+
 		  </Card.Body>
 		</Card>);
 		});
@@ -344,8 +344,9 @@ class EnvironmentView extends React.Component {
 
 	switchEnvironment(environment) {
 		store.dispatch(environmentSelection(environment.name));
-	}                                      
-                                                    
+		this.props.screenchanger("components");
+	}
+
     validate(item, e) {
         console.log(item);
 		fetch('validate', {
@@ -387,7 +388,7 @@ class EnvironmentView extends React.Component {
 				  <ProgressBar variant={variant} animated={attributes.animated} now={environment.progress} />
 				</Card.Text>
 				<Card.Link onClick={(e) => this.triggerEnvironment(environment, e)}>Run Pipeline</Card.Link>
-				<Card.Link onClick={(e) => this.switchEnvironment(environment, e)}>View</Card.Link>
+				<Card.Link onClick={(e) => this.switchEnvironment(environment, e)}>Switch to this environment</Card.Link>
                 <Card.Link onClick={(e) => { this.validate(environment, e) }}>Propagate</Card.Link>
 			  </Card.Body>
 			</Card></Col>)
@@ -678,16 +679,33 @@ class Position extends React.Component {
 	}
 
 	render() {
+		var things = {
+			0: {name: "Provider", screen: "components", handler: (item) => {
 
+					store.dispatch(filter(item));
+			}},
+			1: {name: "Component", screen: "pipeline" },
+			2: {name: "Command", screen: "command"},
+			3: {name: "Screen", screen: "command"}
+		};
 		var splitted = this.props.selection.split("/");
 		var places = splitted.map((place, index) => {
-			var reference = splitted.slice(0, index).join("/");
-			return (<Breadcrumb.Item key={place} onClick={(e) => {this.props.selector(reference)}}>{place}</Breadcrumb.Item>)
+			var reference = splitted.slice(0, index + 1).join("/");
+			return (<div><Breadcrumb.Item key={place} onClick={(e) => {
+
+				this.props.screenchanger(things[index].screen);
+				if (things[index].hasOwnProperty("handler")) {
+					things[index].handler(place, reference);
+				}
+			}}>/ {place} </Breadcrumb.Item></div>)
 		});
-		return (<Breadcrumb>
-			<Breadcrumb.Item>{this.props.environment}</Breadcrumb.Item>
+		return (<div> <Breadcrumb>
+			<Breadcrumb.Item onClick={(e) => {
+				this.props.screenchanger("environments");
+				store.dispatch(filter(""));
+			}}> {this.props.environment} </Breadcrumb.Item>
 		  {places}
-		</Breadcrumb>);
+		</Breadcrumb></div>);
 	}
 }
 
@@ -722,7 +740,7 @@ class App extends React.Component {
 			var screens = (<Screens changer={this.setScreen}>
 				<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4">
 				  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-					<Position environment={store.getState().app.environment} selector={this.selector} selection={store.getState().app.selection}></Position>
+					<Position environment={store.getState().app.environment} screenchanger={this.setScreen} selector={this.selector} selection={store.getState().app.selection}></Position>
 					<h1 className="h2">Dashboard</h1>
 
 
@@ -740,7 +758,7 @@ class App extends React.Component {
 							<h2 className="h2">Environment</h2>
 							</div>
 
-							 <EnvironmentView environments={this.props.store.getState().app.environments} />
+							 <EnvironmentView environments={this.props.store.getState().app.environments} screenchanger={this.setScreen} />
 
 				 	</Page>
 
