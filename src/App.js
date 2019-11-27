@@ -426,8 +426,7 @@ class RunningComponent extends React.Component {
 			  <ProgressBar animated={attributes.animated} variant={variant} now={item.progress} />
 			</Card.Text>
 			<Card.Link href="#">View</Card.Link>
-			<Card.Link href="#">Another Link</Card.Link>
-		  </Card.Body>
+			</Card.Body>
 		</Card>);
 		});
 
