@@ -19,6 +19,7 @@ import io from 'socket.io-client';
 import AnsiUp from 'ansi_up';
 import Interweave from 'interweave';
 
+
 const INITIAL_STATE = {
 	latest: [],
 	pipeline: [],
@@ -96,6 +97,14 @@ function selection(state, list, key) {
 		}
 		return false;
 	})
+}
+
+var globalUpdate = () => {
+	fetch('http://localhost:5000/json').then((response) => {
+		return response.json();
+	}).then((json) => {
+		store.dispatch({type: "UPDATE", state: json})
+	});
 }
 
 function environmentView(store, list) {
@@ -263,7 +272,9 @@ class ComponentList extends React.Component {
 		this.triggerBuild = this.triggerBuild.bind(this);
 		this.goToComponent = this.goToComponent.bind(this);
 		this.propagateChange = this.propagateChange.bind(this);
-
+		this.state = {
+			"running": []
+		}
 	}
 
 	goToComponent(component) {
@@ -272,7 +283,8 @@ class ComponentList extends React.Component {
 	}
 
 	triggerBuild(item, e) {
-		console.log(item);
+		this.state.running = this.state.running.concat(item["name"]);
+		this.setState(this.state);
 		fetch('trigger', {
 			method: "POST",
 			headers: {
@@ -280,7 +292,9 @@ class ComponentList extends React.Component {
             // 'Content-Type': 'application/x-www-form-urlencoded',
         },
 			body: JSON.stringify(item)
-		})
+		}).then(() => {
+			globalUpdate();
+		});
 	}
 
 	propagateChange(item, e) {
@@ -304,6 +318,14 @@ class ComponentList extends React.Component {
 			if (item.command == "running") {
 				attributes.animated = true;
 			}
+			var triggerButton = <div></div>
+
+			if (item.status === "running") {
+				triggerButton = <img src="static/ajax-loader.gif"></img>
+			}
+			else if (item.status === "ready") {
+				 triggerButton = <Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>;
+			}
 
 			return (
 		 <Card className="mb-4" style={{ width: '18rem' }}>
@@ -314,7 +336,7 @@ class ComponentList extends React.Component {
 			  <ProgressBar animated={attributes.animated} variant={variant} now={item.progress} />
 			</Card.Text>
 			<Card.Link onClick={(e) => { this.goToComponent(item, e) }}>View</Card.Link>
-			<Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>
+			{triggerButton}
 			<Card.Link onClick={(e) => { this.propagateChange(item, e) }}>Propagate</Card.Link>
 
 		  </Card.Body>
@@ -857,13 +879,9 @@ fetch('http://localhost:5000/json').then((response) => {
 	store.dispatch({type: 'INIT', state: json})
 });
 
-setInterval(() => {
-	fetch('http://localhost:5000/json').then((response) => {
-		return response.json();
-	}).then((json) => {
-		store.dispatch({type: "UPDATE", state: json})
-	});
-}, 10000);
+
+
+setInterval(globalUpdate, 10000);
 
 setTimeout(() => {
 	store.dispatch(buildChanging('terraform/bastion', 'running'));
