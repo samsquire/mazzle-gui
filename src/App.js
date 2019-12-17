@@ -293,7 +293,30 @@ class ComponentList extends React.Component {
         },
 			body: JSON.stringify(item)
 		}).then(() => {
-			globalUpdate();
+			setTimeout(() => {
+				this.state.running = this.state.running.filter((runningItem) => { return runningItem !== item["name"] });
+				this.setState(this.state);
+			}, 10000);
+
+		});
+	}
+
+	forceTriggerBuild(item, e) {
+		this.state.running = this.state.running.concat(item["name"]);
+		this.setState(this.state);
+		fetch('force-trigger', {
+			method: "POST",
+			headers: {
+						'Content-Type': 'application/json',
+						// 'Content-Type': 'application/x-www-form-urlencoded',
+				},
+			body: JSON.stringify(item)
+		}).then(() => {
+			setTimeout(() => {
+				this.state.running = this.state.running.filter((runningItem) => { return runningItem !== item["name"] });
+				this.setState(this.state);
+			}, 10000);
+
 		});
 	}
 
@@ -323,6 +346,9 @@ class ComponentList extends React.Component {
 			if (item.status === "running") {
 				triggerButton = <img src="static/ajax-loader.gif"></img>
 			}
+			if (this.state.running.indexOf(item["name"]) != -1) {
+				triggerButton = <img src="static/loading.gif"></img>
+			}
 			else if (item.status === "ready") {
 				 triggerButton = <Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>;
 			}
@@ -337,6 +363,7 @@ class ComponentList extends React.Component {
 			</Card.Text>
 			<Card.Link onClick={(e) => { this.goToComponent(item, e) }}>View</Card.Link>
 			{triggerButton}
+			<Card.Link onClick={(e) => { this.forceTriggerBuild(item, e) } }>Force</Card.Link>
 			<Card.Link onClick={(e) => { this.propagateChange(item, e) }}>Propagate</Card.Link>
 
 		  </Card.Body>
