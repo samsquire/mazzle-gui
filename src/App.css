@@ -2,6 +2,29 @@
   text-align: center;
 }
 
+.searchHeading {
+    font-size: 0.75rem;
+    color: grey;
+    font-variant: small-caps;
+}
+
+.searchResults ul {
+    list-style: none
+}
+
+.searchResults {
+    display: grid;
+    grid-template-areas: 'components environments';
+}
+
+.searchResults .environments {
+    grid-area: environments;
+}
+
+.searchResults .components {
+    grid-area: components;
+}
+
 .App main {
 	    padding-top: 48px;
 }

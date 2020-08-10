@@ -29,7 +29,12 @@ const INITIAL_STATE = {
 	filtering: "",
 	selection: "",
 	console: "",
-	environment: ""
+	environment: "",
+    searching: "",
+    searchResults: {
+        environments: [],
+        components: []
+    }
 };
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
@@ -43,6 +48,7 @@ const FILTER = 'FILTER';
 const LOGS = 'LOGS';
 const COMPONENT_SELECTION = 'COMPONENT_SELECTION';
 const ENVIRONMENT_SELECTION = 'ENVIRONMENT_SELECTION';
+const SEARCH_CHANGED = 'SEARCH_CHANGED';
 
 function buildChanging(name, command) {
 	return {
@@ -81,6 +87,13 @@ function componentSelection(component) {
 	}
 }
 
+function searchChanged(query) {
+	return {
+		type: SEARCH_CHANGED,
+		query: query
+	}
+}
+
 function filtering(state, list, key) {
 	return list.filter((item) => {
 		if (item[key].indexOf(state.filtering) != -1) {
@@ -100,7 +113,8 @@ function selection(state, list, key) {
 }
 
 var globalUpdate = () => {
-	fetch('http://localhost:5000/json').then((response) => {
+
+	fetch('http://localhost:5000/json?q=' + store.getState().app.searching).then((response) => {
 		return response.json();
 	}).then((json) => {
 		store.dispatch({type: "UPDATE", state: json})
@@ -130,6 +144,12 @@ function appReducer(state = INITIAL_STATE, action) {
 			})
 			return newState;
 			break;
+
+        case SEARCH_CHANGED:
+            var newState = Object.assign({}, state);
+            Object.assign(newState, {"searching": action.query})
+            return newState;
+            break;
 
 		case FILTER:
 			var newState = Object.assign({}, state);
@@ -501,6 +521,10 @@ class LatestComponentStatus extends React.Component {
 		this.state = {};
 	}
 	triggerCommand(component, command) {
+        var trigger = component["name"];
+        if (command) {
+            trigger = component["name"] + "/" + command["name"]
+        }
 
 		console.log(component, command);
 		fetch('trigger', {
@@ -509,10 +533,12 @@ class LatestComponentStatus extends React.Component {
             'Content-Type': 'application/json',
             // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-			body: JSON.stringify({name: component["name"] + "/" + command["name"]})
-		});
-
+			body: JSON.stringify({name: trigger, environment: component["environment"]})
+		}).then((response) => {
+            globalUpdate();
+        });
 	}
+
 	viewLog(component, command, event) {
 
 
@@ -539,7 +565,15 @@ class LatestComponentStatus extends React.Component {
 
 			var items = selection(store.getState().app, environmentView(store, this.props.latest), 'name').map((component, index) => {
 
+
+
+
 			var cards = component.commands.map((item, index) => {
+                if (item.status == "running") {
+                    var progressBar = <ProgressBar striped animated variant="warning" now={item.progress} />;
+                } else {
+                    var progressBar =  <ProgressBar striped variant="success" now={item.progress} />;
+                }
 			return (<Col key={item.name}>
 				 <Card key={item.name} className="mb-4" style={{ width: '10rem' }}>
 					<Card.Body>
@@ -547,15 +581,17 @@ class LatestComponentStatus extends React.Component {
 					<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
 					<Card.Text>
 					{item.build_number}
-					<ProgressBar striped variant="success" now={item.progress} />
-
+                    {progressBar}
 					</Card.Text>
 					<Card.Link onClick={(e) => this.triggerCommand(component, item, e)}>Trigger</Card.Link>
 					<Card.Link onClick={(e) => this.viewLog(component, item, e)}>View</Card.Link>
 					</Card.Body>
 				</Card></Col>);
 			});
-			return (<div><h2>{component.environment}/{component.name}</h2><Row>{cards}</Row></div>);
+			return (<div><h2>{component.environment}/{component.name}</h2>
+                <Row><a href="#" onClick={(e) => {this.triggerCommand(component, null)}}>Trigger all</a></Row>
+                <Row>{cards}</Row>
+                </div>);
 		});
 
 
@@ -601,15 +637,19 @@ class Screens extends React.Component {
 	constructor(props) {
 		super(props);
 		this.changeScreen = this.changeScreen.bind(this);
+        this.searchChanged = this.searchChanged.bind(this);
 	}
 
 	changeScreen(newScreen, component) {
 		this.props.changer(newScreen);
+    }
 
-	}
+    searchChanged(event) {
+        this.props.onSearchChanged(event.target.value);
+    }
 
 	render() {
-		var searchBox = <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" />
+		var searchBox = <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" onChange={(e) => {this.searchChanged(e)}} />
 
 		return ( <div className="App">
  	   <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -757,6 +797,39 @@ class Position extends React.Component {
 	}
 }
 
+class SearchResults extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+
+
+    render() {
+        var self = this;
+        var environments = this.props.searchResults.environments.map(item => {
+            return <li><a href="#" onClick={(e) => {self.props.changer["environment"](item)}}>{item}</a></li>
+        });
+        var components = environmentView(store, this.props.searchResults.components).map(item => {
+            return <li><a href="#" onClick={(e) => {self.props.changer["component"](item.name)}}>{item.name}</a></li>
+        });
+
+        return (<div className="searchResults">
+        <div class="components resultBlock">
+                <div className="searchHeading">COMPONENTs:</div>
+                <ul>
+                {components}
+                </ul>
+        </div>
+        <div class="environments resultBlock">
+                <div className="searchHeading">ENVIRONMENTs:</div>
+                <ul>
+                {environments}
+                </ul>
+        </div>
+        </div>)
+    }
+}
+
 class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -764,6 +837,18 @@ class App extends React.Component {
 		this.setScreen = this.setScreen.bind(this);
 		this.selector = this.selector.bind(this);
 		this.componentFilterChange = this.componentFilterChange.bind(this);
+        this.onSearchChanged = this.onSearchChanged.bind(this);
+        var self = this;
+        this.changers = {
+                "environment": function (environment) {
+                    store.dispatch(environmentSelection(environment));
+            		self.setScreen("components");
+                },
+                "component": function (component) {
+                    store.dispatch(componentSelection(component));
+                    self.setScreen("components");
+                }
+        }
 	}
 
 	componentFilterChange(event) {
@@ -784,10 +869,19 @@ class App extends React.Component {
 		store.dispatch(componentSelection(selection));
 	}
 
+    onSearchChanged(newSearch) {
+        store.dispatch(searchChanged(newSearch));
+        globalUpdate();
+    }
+
 	render() {
-			var screens = (<Screens changer={this.setScreen}>
+
+
+			var screens = (<Screens onSearchChanged={this.onSearchChanged} changer={this.setScreen}>
 				<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4">
+                  <SearchResults changer={this.changers} searchResults={store.getState().app.searchResults}></SearchResults>
 				  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
 					<Position environment={store.getState().app.environment} screenchanger={this.setScreen} selector={this.selector} selection={store.getState().app.selection}></Position>
 					<h1 className="h2">Dashboard</h1>
 
@@ -908,7 +1002,7 @@ fetch('http://localhost:5000/json').then((response) => {
 
 
 
-setInterval(globalUpdate, 10000);
+setInterval(globalUpdate, 5000);
 
 setTimeout(() => {
 	store.dispatch(buildChanging('terraform/bastion', 'running'));
@@ -929,7 +1023,7 @@ function dispatchTest() {
 	var nextItem = queued.shift();
 	nextItem();
 }
-setInterval(dispatchTest, 1000);
+// setInterval(dispatchTest, 1000);
 
 /*
 var socket = io({transports: ['websocket', 'polling']});
