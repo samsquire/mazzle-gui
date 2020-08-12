@@ -9,7 +9,41 @@
 }
 
 .searchResults ul {
-    list-style: none
+    list-style: none;
+    text-align: left;
+}
+
+.searchResults li {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.notifications {
+    overflow-x: scroll;
+    max-height: 10em;
+    width: 100%;
+}
+
+.notifications .card {
+    float: left;
+}
+
+.example-enter {
+  opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }
 
 .searchResults {

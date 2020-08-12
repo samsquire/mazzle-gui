@@ -9,10 +9,13 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Card from 'react-bootstrap/Card';
+import CardGroup from 'react-bootstrap/Card';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { CSSTransition } from 'react-transition-group';
+import { TransitionGroup } from 'react-transition-group';
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { createStore, combineReducers } from 'redux';
 import io from 'socket.io-client';
@@ -34,7 +37,8 @@ const INITIAL_STATE = {
     searchResults: {
         environments: [],
         components: []
-    }
+    },
+    notifications: []
 };
 const INIT = 'INIT';
 const BUILD_CHANGING = 'BUILD_CHANGING';
@@ -302,17 +306,20 @@ class ComponentList extends React.Component {
 		store.dispatch(componentSelection(component.name));
 	}
 
-	triggerBuild(item, e) {
+	triggerBuild(item, e, force) {
 		this.state.running = this.state.running.concat(item["name"]);
 		this.setState(this.state);
+        var data = Object.assign({}, item);
+        data.force = force;
 		fetch('trigger', {
 			method: "POST",
 			headers: {
             'Content-Type': 'application/json',
             // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-			body: JSON.stringify(item)
+			body: JSON.stringify(data)
 		}).then(() => {
+            globalUpdate();
 			setTimeout(() => {
 				this.state.running = this.state.running.filter((runningItem) => { return runningItem !== item["name"] });
 				this.setState(this.state);
@@ -356,9 +363,9 @@ class ComponentList extends React.Component {
 		var items = filtering(store.getState().app,
 								environmentView(store, this.props.components), 'name')
 		.map((item, index) => {
-			var variant = {green: 'success', 'red': 'danger'}[item.status]
+			var variant = {running: 'success', 'ready': 'info'}[item.status]
 			var attributes = {};
-			if (item.command == "running") {
+			if (item.status == "running") {
 				attributes.animated = true;
 			}
 			var triggerButton = <div></div>
@@ -370,11 +377,11 @@ class ComponentList extends React.Component {
 				triggerButton = <img src="static/loading.gif"></img>
 			}
 			else if (item.status === "ready") {
-				 triggerButton = <Card.Link onClick={(e) => { this.triggerBuild(item, e) } }>Trigger</Card.Link>;
+				 triggerButton = <Card.Link onClick={(e) => { this.triggerBuild(item, e, false) } }>Trigger</Card.Link>;
 			}
 
 			return (
-		 <Card className="mb-4" style={{ width: '18rem' }}>
+		 <Card key={item.environment + item.name} className="mb-4" style={{ width: '18rem' }}>
 		  <Card.Body>
 			<Card.Title>{ item.name }</Card.Title>
 			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
@@ -383,7 +390,7 @@ class ComponentList extends React.Component {
 			</Card.Text>
 			<Card.Link onClick={(e) => { this.goToComponent(item, e) }}>View</Card.Link>
 			{triggerButton}
-			<Card.Link onClick={(e) => { this.forceTriggerBuild(item, e) } }>Force</Card.Link>
+			<Card.Link onClick={(e) => { this.triggerBuild(item, e, true) } }>Force</Card.Link>
 			<Card.Link onClick={(e) => { this.propagateChange(item, e) }}>Propagate</Card.Link>
 
 		  </Card.Body>
@@ -428,7 +435,7 @@ class EnvironmentView extends React.Component {
 		})
     }
 
-	triggerEnvironment(environment, event) {
+	triggerEnvironment(environment, forced, event) {
 		console.log("Full trigger of environment", environment);
 
 		fetch('trigger-environment', {
@@ -437,15 +444,17 @@ class EnvironmentView extends React.Component {
 						'Content-Type': 'application/json',
 						// 'Content-Type': 'application/x-www-form-urlencoded',
 				},
-			body: JSON.stringify({environment: environment.name})
-		})
+			body: JSON.stringify({environment: environment.name, forced: forced})
+		}).then(function () {
+            globalUpdate();
+        })
 	}
 
 	render() {
 		var environments = this.props.environments.map((environment, index) => {
-			var variant = {"broken": "danger", "ready": "success", "building": "success"}[environment["status"]]
+			var variant = {"running": "success", "ready": "success", "building": "success"}[environment["status"]]
 			var attributes = {}
-			if (environment["status"] == "building") {
+			if (environment["status"] == "running") {
 				attributes.animated = true;
 			}
 			return (<Col key={environment.name}>
@@ -456,7 +465,8 @@ class EnvironmentView extends React.Component {
 				<Card.Text>
 				  <ProgressBar variant={variant} animated={attributes.animated} now={environment.progress} />
 				</Card.Text>
-				<Card.Link onClick={(e) => this.triggerEnvironment(environment, e)}>Run Pipeline</Card.Link>
+				<Card.Link onClick={(e) => this.triggerEnvironment(environment, false, e)}>Run</Card.Link>
+                <Card.Link onClick={(e) => this.triggerEnvironment(environment, true, e)}>Force Run</Card.Link>
 				<Card.Link onClick={(e) => this.switchEnvironment(environment, e)}>Switch to this environment</Card.Link>
                 <Card.Link onClick={(e) => { this.validate(environment, e) }}>Propagate</Card.Link>
 			  </Card.Body>
@@ -520,20 +530,20 @@ class LatestComponentStatus extends React.Component {
 		this.viewLog = this.viewLog.bind(this);
 		this.state = {};
 	}
-	triggerCommand(component, command) {
+	triggerCommand(component, command, force) {
         var trigger = component["name"];
         if (command) {
             trigger = component["name"] + "/" + command["name"]
         }
 
-		console.log(component, command);
+		console.log(component, command, force);
 		fetch('trigger', {
 			method: "POST",
 			headers: {
             'Content-Type': 'application/json',
             // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-			body: JSON.stringify({name: trigger, environment: component["environment"]})
+			body: JSON.stringify({name: trigger, force: force, environment: component["environment"]})
 		}).then((response) => {
             globalUpdate();
         });
@@ -574,8 +584,8 @@ class LatestComponentStatus extends React.Component {
                 } else {
                     var progressBar =  <ProgressBar striped variant="success" now={item.progress} />;
                 }
-			return (<Col key={item.name}>
-				 <Card key={item.name} className="mb-4" style={{ width: '10rem' }}>
+			return (<Col key={item.environment + item.name}>
+				 <Card key={item.environment + item.name} className="mb-4" style={{ width: '10rem' }}>
 					<Card.Body>
 					<Card.Title>{ item.name }</Card.Title>
 					<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
@@ -589,7 +599,10 @@ class LatestComponentStatus extends React.Component {
 				</Card></Col>);
 			});
 			return (<div><h2>{component.environment}/{component.name}</h2>
-                <Row><a href="#" onClick={(e) => {this.triggerCommand(component, null)}}>Trigger all</a></Row>
+                <Row>
+                    <a href="#" onClick={(e) => {this.triggerCommand(component, null, false)}}>Trigger all</a>
+                    <a href="#" onClick={(e) => {this.triggerCommand(component, null, true)}}>Force trigger all</a>
+                </Row>
                 <Row>{cards}</Row>
                 </div>);
 		});
@@ -609,13 +622,17 @@ class EnvironmentPipeline extends React.Component {
 		var items = (this.props.pipeline.map((group, index) => {
 
 			return group.map((item, index) => {
-				var variant = {green: 'success', 'red': 'danger'}[item.status]
+				var variant = {green: 'success', 'red': 'danger'}[item.status];
+                var animated = "";
+                if (item.status == "running") {
+                    animated = "animated";
+                };
 				return  <Card key={item.name} className="mb-0 px-0 py-0 mx-0 my-0" style={{ width: '12rem' }}>
 			  <Card.Body>
 				<Card.Title></Card.Title>
 				<Card.Subtitle className="mb-2 text-muted">{ item.name }</Card.Subtitle>
 				<Card.Text>
-				  <ProgressBar variant={variant} now={item.progress} />
+				  <ProgressBar animated={animated} variant={variant} now={item.progress} />
 				</Card.Text>
 				<Card.Link href="#">View</Card.Link>
 			  </Card.Body>
@@ -701,7 +718,7 @@ class Screens extends React.Component {
  				  <li className="nav-item">
  					<a className="nav-link" onClick={(e) => {this.changeScreen("running")}}>
  					  <span data-feather="layers"></span>
- 					  Running
+ 					  Running ({this.props.running.length})
  					</a>
  				  </li>
 					<li className="nav-item">
@@ -797,6 +814,36 @@ class Position extends React.Component {
 	}
 }
 
+class Notifications extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        var cards = this.props.data.map((item, index) => {
+            return <CSSTransition key={item.id} classNames="example" timeout={{ enter: 500, exit: 300 }}><Card
+    bg={item.variant.toLowerCase()}
+    key={item.id}
+    text={item.variant.toLowerCase() === 'light' ? 'dark' : 'white'}
+    style={{ "min-width": '18em', "min-height": '10em' }}
+    className=""
+  >
+    <Card.Header>{item.header}</Card.Header>
+    <Card.Body>
+      <Card.Title>{item.title}</Card.Title>
+      <Card.Text>
+        {item.text}
+      </Card.Text>
+    </Card.Body>
+  </Card></CSSTransition>
+    });
+    return <div className="notifications">
+
+    <TransitionGroup>{cards}</TransitionGroup></div>;
+    }
+
+}
+
 class SearchResults extends React.Component {
     constructor(props) {
         super(props);
@@ -845,7 +892,7 @@ class App extends React.Component {
             		self.setScreen("components");
                 },
                 "component": function (component) {
-                    store.dispatch(componentSelection(component));
+                    store.dispatch(filter(component));
                     self.setScreen("components");
                 }
         }
@@ -877,9 +924,10 @@ class App extends React.Component {
 	render() {
 
 
-			var screens = (<Screens onSearchChanged={this.onSearchChanged} changer={this.setScreen}>
+			var screens = (<Screens running={store.getState().app.running} onSearchChanged={this.onSearchChanged} changer={this.setScreen}>
 				<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4">
                   <SearchResults changer={this.changers} searchResults={store.getState().app.searchResults}></SearchResults>
+                  <Notifications data={store.getState().app.notifications}></Notifications>
 				  <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 
 					<Position environment={store.getState().app.environment} screenchanger={this.setScreen} selector={this.selector} selection={store.getState().app.selection}></Position>
