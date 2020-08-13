@@ -1,4 +1,4 @@
-# devops-pipeline-gui
+# mazzle-gui
 
 This is where I have been developing a user interface for mazzle
 
