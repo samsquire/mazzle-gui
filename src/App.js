@@ -532,7 +532,7 @@ class LatestComponentStatus extends React.Component {
 	}
 	triggerCommand(component, command, force) {
         var trigger = component["name"];
-        if (command) {
+        if (command != null) {
             trigger = component["name"] + "/" + command["name"]
         }
 
@@ -593,7 +593,7 @@ class LatestComponentStatus extends React.Component {
 					{item.build_number}
                     {progressBar}
 					</Card.Text>
-					<Card.Link onClick={(e) => this.triggerCommand(component, item, e)}>Trigger</Card.Link>
+					<Card.Link onClick={(e) => this.triggerCommand(component, item, true)}>Trigger</Card.Link>
 					<Card.Link onClick={(e) => this.viewLog(component, item, e)}>View</Card.Link>
 					</Card.Body>
 				</Card></Col>);
@@ -743,7 +743,6 @@ class Page extends React.Component {
 		super(props);
 	}
 	render() {
-		console.log(this.props.currentscreen);
 		if (this.props.currentscreen === this.props.target) {
 			return this.props.children;
 		}
