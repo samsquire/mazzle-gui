@@ -1,6 +1,6 @@
 # devops-pipeline-gui
 
-This is where I have been developing a user interface for devops-pipeline
+This is where I have been developing a user interface for mazzle
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
