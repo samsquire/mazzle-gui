@@ -363,7 +363,10 @@ class ComponentList extends React.Component {
 		var items = filtering(store.getState().app,
 								environmentView(store, this.props.components), 'name')
 		.map((item, index) => {
-			var variant = {running: 'success', 'ready': 'info'}[item.status]
+			var variant = "danger";
+            if (item.build_success == "success") {
+                variant = "success";
+            }
 			var attributes = {};
 			if (item.status == "running") {
 				attributes.animated = true;
@@ -452,7 +455,10 @@ class EnvironmentView extends React.Component {
 
 	render() {
 		var environments = this.props.environments.map((environment, index) => {
-			var variant = {"running": "success", "ready": "success", "building": "success"}[environment["status"]]
+            var variant = "danger";
+            if (environment.build_success == "success") {
+                 variant = "success";
+            }
 			var attributes = {}
 			if (environment["status"] == "running") {
 				attributes.animated = true;
@@ -558,7 +564,7 @@ class LatestComponentStatus extends React.Component {
 				headers: {
 							'Content-Type': 'application/json'
 					},
-				body: JSON.stringify({component: component, command: command})
+				body: JSON.stringify({environment: component.environment, component: component, command: command})
 			}).then((response) => {
 				return response.json();
 			}).then((json) => {
@@ -579,10 +585,16 @@ class LatestComponentStatus extends React.Component {
 
 
 			var cards = component.commands.map((item, index) => {
-                if (item.status == "running") {
-                    var progressBar = <ProgressBar striped animated variant="warning" now={item.progress} />;
+                if (item.build_success == "success") {
+                    var variant = "success";
                 } else {
-                    var progressBar =  <ProgressBar striped variant="success" now={item.progress} />;
+                    var variant = "danger";
+                }
+
+                if (item.status == "running") {
+                    var progressBar = <ProgressBar striped animated variant={variant} now={item.progress} />;
+                } else {
+                    var progressBar =  <ProgressBar striped variant={variant} now={item.progress} />;
                 }
 			return (<Col key={item.environment + item.name}>
 				 <Card key={item.environment + item.name} className="mb-4" style={{ width: '10rem' }}>
@@ -670,7 +682,7 @@ class Screens extends React.Component {
 
 		return ( <div className="App">
  	   <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
- 		  <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">devops-pipeline</a>
+ 		  <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Mazzle</a>
  		  {searchBox}
 
 			<ul className="navbar-nav px-3">
@@ -721,6 +733,13 @@ class Screens extends React.Component {
  					  Running ({this.props.running.length})
  					</a>
  				  </li>
+
+                  <li className="nav-item">
+                  <a className="nav-link" onClick={(e) => {this.changeScreen("parallelism")}}>
+                      <span data-feather="layers"></span>
+                      Parallelism
+                  </a>
+                  </li>
 					<li className="nav-item">
 					<a className="nav-link" onClick={(e) => {this.changeScreen("debug")}}>
 						<span data-feather="layers"></span>
@@ -876,6 +895,27 @@ class SearchResults extends React.Component {
     }
 }
 
+class ParallelismComponent extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var keys = Object.keys(this.props.parallelism);
+        var chunks = keys.map(item => {
+            var listItems = this.props.parallelism[item].map(component => {
+                return <li>{component}</li>;
+            });
+            return (<div>
+            <h2>Stage {item}</h2>
+            <ul>
+                {listItems}
+            </ul>
+            </div>);
+        });
+        return <div>{chunks}</div>;
+    }
+}
+
 class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -1016,6 +1056,15 @@ class App extends React.Component {
 
 							<RunningComponent running={this.props.store.getState().app.running}></RunningComponent>
 				</Page>
+
+                <Page currentscreen={this.state.screen} target="parallelism">
+                           <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h2 className="h2">Parallelism</h2>
+                           </div>
+
+                           <ParallelismComponent parallelism={this.props.store.getState().app.parallelism}></ParallelismComponent>
+               </Page>
+
 				  <div className="table-responsive">
 
 				  </div>
