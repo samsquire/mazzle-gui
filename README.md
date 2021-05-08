@@ -1,6 +1,6 @@
 # mazzle-gui
 
-This is where I have been developing a user interface for mazzle. See devops-pipeline.com or [mazzle](https://github.com/samsquire/mazzle]
+This is where I have been developing a user interface for mazzle. See devops-pipeline.com or [mazzle](https://github.com/samsquire/mazzle)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
