@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@aws-amplify/api": "^1.0.42",
+    "@aws-amplify/api": "^4.0.55",
     "@aws-amplify/pubsub": "^1.1.0",
     "ansi_up": "^4.0.4",
     "interweave": "^11.1.0",
